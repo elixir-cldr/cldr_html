@@ -1,4 +1,4 @@
-defmodule Cldr.Html do
+defmodule Cldr.HTML do
   if Code.ensure_compiled?(Cldr.Currency) do
     @type currency_select_options :: [{:currencies, list(atom() | binary())} | {:mapper, function()} | {:locale, String.t() | Cldr.LanguageTag.t()}]
 
