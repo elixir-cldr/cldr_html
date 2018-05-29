@@ -39,7 +39,9 @@ defmodule Cldr.HTML do
       case options[:selected] do
         nil      -> Phoenix.HTML.Form.select(form, field, currency_options(options))
 
-        selected -> Phoenix.HTML.Form.select(form, field, currency_options(options), [selected: selected])
+        selected ->
+          options = maybe_include_selected_currency(options)
+          Phoenix.HTML.Form.select(form, field, currency_options(options), [selected: selected])
       end
     end
 
@@ -92,6 +94,21 @@ defmodule Cldr.HTML do
         {:error, reason} -> {:error, reason}
 
         {:ok, _}         -> options
+      end
+    end
+
+    defp maybe_include_selected_currency(options) do
+      selected = options[:selected]
+      currencies = Enum.reduce(options[:currencies], [], fn
+                        currency, acc when is_atom(currency)   -> [currency, Kernel.to_string(currency) | acc]
+
+                        currency, acc when is_binary(currency) -> [currency, String.to_existing_atom(currency) | acc]
+                   end)
+
+      case selected in currencies do
+        false -> Keyword.update(options, :currencies, [selected], &[selected | &1])
+
+        true  -> options
       end
     end
 
