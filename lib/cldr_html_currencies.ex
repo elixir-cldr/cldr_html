@@ -21,8 +21,8 @@ if Code.ensure_compiled?(Cldr.Currency) do
 
     # Examples
 
-       => Cldr.Html.currency_select(:my_form, :currency, selected: :USD)
-       => Cldr.Html.currency_select(:my_form, :currency, "USD", currencies: ["USD", "EUR", :JPY], mapper: &({&1.name, &1.code}))
+       => Cldr.Html.Currency.select(:my_form, :currency, selected: :USD)
+       => Cldr.Html.Currency.select(:my_form, :currency, "USD", currencies: ["USD", "EUR", :JPY], mapper: &({&1.name, &1.code}))
 
     """
     @spec select(
@@ -33,6 +33,7 @@ if Code.ensure_compiled?(Cldr.Currency) do
             Phoenix.HTML.safe()
             | {:error, {Cldr.UnknownCurrencyError, binary()}}
             | {:error, {Cldr.UnknownLocaleError, binary()}}
+
     def select(form, field, options \\ [])
 
     def select(form, field, options) when is_list(options) do
@@ -70,7 +71,7 @@ if Code.ensure_compiled?(Cldr.Currency) do
 
     defp default_options do
       Map.new(
-        currencies: Cldr.known_currencies(),
+        currencies: default_currency_list(),
         locale: Cldr.default_locale(),
         mapper: &{&1.code <> " - " <> &1.name, &1.code},
         selected: nil
@@ -127,6 +128,19 @@ if Code.ensure_compiled?(Cldr.Currency) do
       |> Enum.map(&Cldr.Currency.currency_for_code(&1, options[:locale]))
       |> Enum.map(fn {:ok, currency} -> options[:mapper].(currency) end)
       |> Enum.sort()
+    end
+
+    # Default currency list to legal tender currencies
+    # if Money is available, otherwise the full list of
+    # Cldr currencies (which is almost identitical to ISO4217)
+    if Code.ensure_loaded?(Money) do
+      def default_currency_list() do
+        Money.known_tender_currencies()
+      end
+    else
+      def default_currency_list() do
+        Cldr.known_currencies()
+      end
     end
   end
 end

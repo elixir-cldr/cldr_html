@@ -6,19 +6,28 @@ defmodule Cldr.HTML.Currency.Test do
 
   describe "currency_select/3" do
     test "with selected currency" do
-      assert safe_to_string(
+      string = safe_to_string(
                Cldr.HTML.Currency.select(
                  :my_form,
                  :currency,
                  selected: :USD,
                  currencies: ~w(USD EUR JPY COP)
                )
-             ) ==
-               ~s(<select id="my_form_currency" name="my_form[currency]" selected="USD">) <>
+             )
+      assert (string ==  ~s(<select id="my_form_currency" name="my_form[currency]" selected="USD">) <>
                  ~s(<option value="COP">COP - Colombian Peso</option>) <>
                  ~s(<option value="EUR">EUR - Euro</option>) <>
                  ~s(<option value="JPY">JPY - Japanese Yen</option>) <>
                  ~s(<option value="USD">USD - US Dollar</option>) <> ~s(</select>)
+
+            || string ==
+                 ~s(<select id="my_form_currency" name="my_form[currency]">) <>
+                 ~s(<option value="COP">COP - Colombian Peso</option>) <>
+                 ~s(<option value="EUR">EUR - Euro</option>) <>
+                 ~s(<option value="JPY">JPY - Japanese Yen</option>) <>
+                 ~s(<option value="USD" selected>USD - US Dollar</option>) <> ~s(</select>)
+            )
+
     end
 
     test "without selected currency" do
@@ -37,18 +46,27 @@ defmodule Cldr.HTML.Currency.Test do
     end
 
     test "when selected currency is not in currencies" do
-      assert safe_to_string(
+      string = safe_to_string(
                Cldr.HTML.Currency.select(
                  :my_form,
                  :currency,
                  selected: :USD,
                  currencies: ~w(EUR JPY)
                )
-             ) ==
-               ~s(<select id="my_form_currency" name="my_form[currency]" selected="USD">) <>
+             )
+
+      assert (string ==
+                 ~s(<select id="my_form_currency" name="my_form[currency]" selected="USD">) <>
                  ~s(<option value="EUR">EUR - Euro</option>) <>
                  ~s(<option value="JPY">JPY - Japanese Yen</option>) <>
                  ~s(<option value="USD">USD - US Dollar</option>) <> ~s(</select>)
+              || string ==
+                 ~s(<select id="my_form_currency" name="my_form[currency]">) <>
+                 ~s(<option value="EUR">EUR - Euro</option>) <>
+                 ~s(<option value="JPY">JPY - Japanese Yen</option>) <>
+                 ~s(<option value="USD" selected>USD - US Dollar</option>) <> ~s(</select>)
+              )
+
     end
 
     test "with thai locale" do

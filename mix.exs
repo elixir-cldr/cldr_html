@@ -25,8 +25,9 @@ defmodule Cldr.Html.MixProject do
   defp deps do
     [
       {:ex_cldr, "~> 1.5"},
-      {:phoenix_html, "~> 1.2"},
+      {:phoenix_html, "~> 1.2 or ~> 2.0"},
       {:ex_cldr_currencies, "~> 0.1", optional: true},
+      {:ex_money, "~> 2.5", optional: true},
       {:jason, "~> 1.0", optional: true},
       {:poison, "~> 2.1 or ~> 3.0", optional: true}
     ]
