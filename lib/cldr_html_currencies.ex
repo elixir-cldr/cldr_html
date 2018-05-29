@@ -1,6 +1,6 @@
 if Code.ensure_compiled?(Cldr.Currency) do
   defmodule Cldr.HTML.Currency do
-    @type currency_select_options :: [
+    @type select_options :: [
             {:currencies, [atom() | binary(), ...]}
             | {:locale, binary() | Cldr.LanguageTag.t()}
             | {:mapper, function()}
@@ -25,36 +25,36 @@ if Code.ensure_compiled?(Cldr.Currency) do
        => Cldr.Html.currency_select(:my_form, :currency, "USD", currencies: ["USD", "EUR", :JPY], mapper: &({&1.name, &1.code}))
 
     """
-    @spec currency_select(
+    @spec select(
             form :: Phoenix.HTML.Form.t(),
             field :: Phoenix.HTML.Form.field(),
-            currency_select_options
+            select_options
           ) ::
             Phoenix.HTML.safe()
             | {:error, {Cldr.UnknownCurrencyError, binary()}}
             | {:error, {Cldr.UnknownLocaleError, binary()}}
-    def currency_select(form, field, options \\ [])
+    def select(form, field, options \\ [])
 
-    def currency_select(form, field, options) when is_list(options) do
-      currency_select(form, field, Map.new(options))
+    def select(form, field, options) when is_list(options) do
+      select(form, field, Map.new(options))
     end
 
-    def currency_select(form, field, %{} = options) do
-      currency_select(form, field, validate_options(options), options[:selected])
+    def select(form, field, %{} = options) do
+      select(form, field, validate_options(options), options[:selected])
     end
 
     # Invalid options
-    def currency_select(_form, _field, {:error, reason}, _selected) do
+    def select(_form, _field, {:error, reason}, _selected) do
       {:error, reason}
     end
 
     # No selected currency
-    def currency_select(form, field, options, nil) do
+    def select(form, field, options, nil) do
       Phoenix.HTML.Form.select(form, field, currency_options(options))
     end
 
     # Selected currency
-    def currency_select(form, field, options, selected) do
+    def select(form, field, options, selected) do
       options = maybe_include_selected_currency(options)
       Phoenix.HTML.Form.select(form, field, currency_options(options), selected: selected)
     end

@@ -7,7 +7,7 @@ defmodule Cldr.HTML.Currency.Test do
   describe "currency_select/3" do
     test "with selected currency" do
       assert safe_to_string(
-               Cldr.HTML.Currency.currency_select(
+               Cldr.HTML.Currency.select(
                  :my_form,
                  :currency,
                  selected: :USD,
@@ -23,7 +23,7 @@ defmodule Cldr.HTML.Currency.Test do
 
     test "without selected currency" do
       assert safe_to_string(
-               Cldr.HTML.Currency.currency_select(
+               Cldr.HTML.Currency.select(
                  :my_form,
                  :currency,
                  currencies: ~w(USD EUR JPY COP)
@@ -38,7 +38,7 @@ defmodule Cldr.HTML.Currency.Test do
 
     test "when selected currency is not in currencies" do
       assert safe_to_string(
-               Cldr.HTML.Currency.currency_select(
+               Cldr.HTML.Currency.select(
                  :my_form,
                  :currency,
                  selected: :USD,
@@ -53,7 +53,7 @@ defmodule Cldr.HTML.Currency.Test do
 
     test "with thai locale" do
       assert safe_to_string(
-               Cldr.HTML.Currency.currency_select(
+               Cldr.HTML.Currency.select(
                  :my_form,
                  :currency,
                  currencies: ~w(USD EUR JPY COP),
@@ -68,7 +68,7 @@ defmodule Cldr.HTML.Currency.Test do
     end
 
     test "with invalid selected" do
-      assert Cldr.HTML.Currency.currency_select(
+      assert Cldr.HTML.Currency.select(
                :my_form,
                :currency,
                selected: ~w(invalid1),
@@ -77,7 +77,7 @@ defmodule Cldr.HTML.Currency.Test do
     end
 
     test "with invalid currencies" do
-      assert Cldr.HTML.Currency.currency_select(
+      assert Cldr.HTML.Currency.select(
                :my_form,
                :currency,
                currencies: ~w(invalid1 invalid2)
@@ -85,7 +85,7 @@ defmodule Cldr.HTML.Currency.Test do
     end
 
     test "with invalid locale" do
-      assert Cldr.HTML.Currency.currency_select(:my_form, :currency, locale: "invalid") ==
+      assert Cldr.HTML.Currency.select(:my_form, :currency, locale: "invalid") ==
                {:error, {Cldr.UnknownLocaleError, "The locale \"invalid\" is not known."}}
     end
   end
