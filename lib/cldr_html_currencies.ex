@@ -15,7 +15,7 @@ if Code.ensure_compiled?(Cldr.Currency) do
 
     @doc """
     Generate an HTML select tag for a currency list
-    that can be used with a`Phoenix.HTML.Form.t`.
+    that can be used with a `Phoenix.HTML.Form.t`.
 
     ## Arguments
 
@@ -23,7 +23,7 @@ if Code.ensure_compiled?(Cldr.Currency) do
 
     * A `Phoenix.HTML.Form.field()` field
 
-    * A `Keyword.t` list of options
+    * A `Keyword.t()` list of options
 
     ## Options
 
@@ -47,7 +47,11 @@ if Code.ensure_compiled?(Cldr.Currency) do
       is `&({&1.code <> " - " <> &1.name, &1.code})`
 
     * `:selected` identifies the currency that is to be selected
-      by default in the `select` tag.  The default is `nil`.
+      by default in the `select` tag.  The default is `nil`. This
+      is passed unmodified to `Phoenix.HTML.Form.select/4`
+
+    * `:prompt` is a prompt displayed at the top of the select
+       box. This is passed unmodified to `Phoenix.HTML.Form.select/4`
 
     # Examples
 
@@ -79,15 +83,19 @@ if Code.ensure_compiled?(Cldr.Currency) do
       {:error, reason}
     end
 
-    # No selected currency
-    defp select(form, field, options, nil) do
-      Phoenix.HTML.Form.select(form, field, currency_options(options))
-    end
-
     # Selected currency
-    defp select(form, field, options, selected) do
-      options = maybe_include_selected_currency(options)
-      Phoenix.HTML.Form.select(form, field, currency_options(options), selected: selected)
+    defp select(form, field, options, _selected) do
+      select_options =
+        options
+        |> Map.take([:selected, :prompt])
+        |> Map.to_list
+
+      options =
+        options
+        |> maybe_include_selected_currency
+        |> currency_options
+
+      Phoenix.HTML.Form.select(form, field, options, select_options)
     end
 
     defp validate_options(options) do
@@ -143,6 +151,10 @@ if Code.ensure_compiled?(Cldr.Currency) do
       with {:ok, locale} <- Cldr.validate_locale(locale) do
         {:ok, Map.put(options, :locale, locale)}
       end
+    end
+
+    defp maybe_include_selected_currency(%{selected: nil} = options) do
+      options
     end
 
     defp maybe_include_selected_currency(%{currencies: currencies, selected: selected} = options) do
