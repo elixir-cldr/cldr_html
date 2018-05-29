@@ -2,7 +2,7 @@ if Code.ensure_compiled?(Cldr.Currency) do
   defmodule Cldr.HTML.Currency do
     @moduledoc """
     Implements `Phoenix.HTML.Form.select/4` specifically for
-    currency display.
+    localised currency display.
 
     """
 
