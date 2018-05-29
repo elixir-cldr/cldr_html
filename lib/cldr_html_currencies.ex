@@ -110,7 +110,7 @@ if Code.ensure_compiled?(Cldr.Currency) do
     end
 
     defp validate_locale(%{locale: locale} = options) do
-      with {:ok, _locale} <- Cldr.validate_locale(locale) do
+      with {:ok, locale} <- Cldr.validate_locale(locale) do
         {:ok, Map.put(options, :locale, locale)}
       end
     end
