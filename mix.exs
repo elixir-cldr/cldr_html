@@ -29,7 +29,8 @@ defmodule Cldr.Html.MixProject do
       {:ex_cldr_currencies, "~> 0.1", optional: true},
       {:ex_money, "~> 2.5", optional: true},
       {:jason, "~> 1.0", optional: true},
-      {:poison, "~> 2.1 or ~> 3.0", optional: true}
+      {:poison, "~> 2.1 or ~> 3.0", optional: true},
+      {:ex_doc, "~> 0.18", only: :dev},
     ]
   end
 end

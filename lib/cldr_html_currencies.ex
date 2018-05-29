@@ -1,5 +1,11 @@
 if Code.ensure_compiled?(Cldr.Currency) do
   defmodule Cldr.HTML.Currency do
+    @moduledoc """
+    Implements `Phoenix.HTML.Form.select/4` specifically for
+    currency display.
+
+    """
+
     @type select_options :: [
             {:currencies, [atom() | binary(), ...]}
             | {:locale, binary() | Cldr.LanguageTag.t()}
@@ -8,21 +14,45 @@ if Code.ensure_compiled?(Cldr.Currency) do
           ]
 
     @doc """
-    Genereate a currency select for a `Phoenix.HTML.Form.t`
-    for select options see `Phoenix.HTML.Form.select/4`
+    Generate an HTML select tag for a currency list
+    that can be used with a`Phoenix.HTML.Form.t`.
 
-    * `Options` are expected to be an `Keyword.t` with the following keys
-      * `:currencies` defaults to `Cldr.known_currencies/1`
-      * `:locale`     defaults to `Cldr.default_locale/1`
-      * `:mapper`     defaults to `&({&1.code <> " - " <> &1.name, &1.code})`
-      * `:selected    defaults to `nil`
+    ## Arguments
 
-    The mapper expects an `Cldr.Currency.t`
+    * A `Phoenix.HTML.Form.t()` form
+
+    * A `Phoenix.HTML.Form.field()` field
+
+    * A `Keyword.t` list of options
+
+    ## Options
+
+    For select options see `Phoenix.HTML.Form.select/4`
+
+    * `:currencies` defines the list of currencies to be
+      displayed in the the `select` tag.  The list defaults to
+      the currencies returned by `Money.known_tender_currencies/0`
+      if the package [ex_money](https://hex.pm/packages/ex_money)
+      is installed otherwise it is the list returned by
+      `Cldr.known_currencies/1`
+
+    * `:locale` defines the locale to be used to localise the
+      description of the currencies.  The default is the locale
+      returned by `Cldr.default_locale/1`
+
+    * `:mapper` is a function that creates the text to be
+      displayed in the select tag for each currency.  It is
+      passed the currency definition `Cldr.Currency.t` as returned by
+      `Cldr.Currency.currency_for_code/2`.  The default function
+      is `&({&1.code <> " - " <> &1.name, &1.code})`
+
+    * `:selected` identifies the currency that is to be selected
+      by default in the `select` tag.  The default is `nil`.
 
     # Examples
 
-       => Cldr.Html.Currency.select(:my_form, :currency, selected: :USD)
-       => Cldr.Html.Currency.select(:my_form, :currency, "USD", currencies: ["USD", "EUR", :JPY], mapper: &({&1.name, &1.code}))
+         => Cldr.HTML.Currency.select(:my_form, :currency, selected: :USD)
+         => Cldr.HTML.Currency.select(:my_form, :currency, currencies: ["USD", "EUR", :JPY], mapper: &({&1.name, &1.code}))
 
     """
     @spec select(
@@ -45,17 +75,17 @@ if Code.ensure_compiled?(Cldr.Currency) do
     end
 
     # Invalid options
-    def select(_form, _field, {:error, reason}, _selected) do
+    defp select(_form, _field, {:error, reason}, _selected) do
       {:error, reason}
     end
 
     # No selected currency
-    def select(form, field, options, nil) do
+    defp select(form, field, options, nil) do
       Phoenix.HTML.Form.select(form, field, currency_options(options))
     end
 
     # Selected currency
-    def select(form, field, options, selected) do
+    defp select(form, field, options, selected) do
       options = maybe_include_selected_currency(options)
       Phoenix.HTML.Form.select(form, field, currency_options(options), selected: selected)
     end
@@ -134,11 +164,11 @@ if Code.ensure_compiled?(Cldr.Currency) do
     # if Money is available, otherwise the full list of
     # Cldr currencies (which is almost identitical to ISO4217)
     if Code.ensure_loaded?(Money) do
-      def default_currency_list() do
+      defp default_currency_list() do
         Money.known_tender_currencies()
       end
     else
-      def default_currency_list() do
+      defp default_currency_list() do
         Cldr.known_currencies()
       end
     end
