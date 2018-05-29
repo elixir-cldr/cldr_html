@@ -27,6 +27,15 @@ defmodule Cldr.HTML.Test do
 
     end
 
+    test "when selected currency is not in currencies" do
+      assert safe_to_string(
+        Cldr.HTML.currency_select(:my_form, :currency, selected: :USD, currencies: ~w(EUR JPY))
+        ) ==  ~s(<select id="my_form_currency" name="my_form[currency]" selected="USD">) <>
+              ~s(<option value="EUR">EUR - Euro</option>) <>
+              ~s(<option value="JPY">JPY - Japanese Yen</option>) <>
+              ~s(<option value="USD">USD - US Dollar</option>) <> ~s(</select>)
+    end
+
     test "with thai locale" do
       assert safe_to_string(
         Cldr.HTML.currency_select(:my_form, :currency, currencies: ~w(USD EUR JPY COP), locale: "th")
