@@ -1,11 +1,11 @@
 if Code.ensure_compiled?(Cldr.Currency) do
   defmodule Cldr.HTML.Currency do
     @type currency_select_options :: [
-                                       {:currencies, [atom() | binary(), ...]}
-                                       | {:locale, binary() | Cldr.LanguageTag.t()}
-                                       | {:mapper, function()}
-                                       | {:selected, atom() | binary()}
-                                      ]
+            {:currencies, [atom() | binary(), ...]}
+            | {:locale, binary() | Cldr.LanguageTag.t()}
+            | {:mapper, function()}
+            | {:selected, atom() | binary()}
+          ]
 
     @doc """
     Genereate a currency select for a `Phoenix.HTML.Form.t`
@@ -25,7 +25,14 @@ if Code.ensure_compiled?(Cldr.Currency) do
        => Cldr.Html.currency_select(:my_form, :currency, "USD", currencies: ["USD", "EUR", :JPY], mapper: &({&1.name, &1.code}))
 
     """
-    @spec currency_select(form :: Phoenix.HTML.Form.t(), field :: Phoenix.HTML.Form.field(), currency_select_options) :: Phoenix.HTML.safe() | {:error, {Cldr.UnknownCurrencyError, binary()}} | {:error, {Cldr.UnknownLocaleError, binary()}}
+    @spec currency_select(
+            form :: Phoenix.HTML.Form.t(),
+            field :: Phoenix.HTML.Form.field(),
+            currency_select_options
+          ) ::
+            Phoenix.HTML.safe()
+            | {:error, {Cldr.UnknownCurrencyError, binary()}}
+            | {:error, {Cldr.UnknownLocaleError, binary()}}
     def currency_select(form, field, options \\ [])
 
     def currency_select(form, field, options) when is_list(options) do
@@ -49,14 +56,14 @@ if Code.ensure_compiled?(Cldr.Currency) do
     # Selected currency
     def currency_select(form, field, options, selected) do
       options = maybe_include_selected_currency(options)
-      Phoenix.HTML.Form.select(form, field, currency_options(options), [selected: selected])
+      Phoenix.HTML.Form.select(form, field, currency_options(options), selected: selected)
     end
 
     defp validate_options(options) do
       with options <- Map.merge(default_options(), options),
-          {:ok, options} <- validate_selected(options),
-          {:ok, options} <- validate_currencies(options),
-          {:ok, options} <- validate_locale(options) do
+           {:ok, options} <- validate_selected(options),
+           {:ok, options} <- validate_currencies(options),
+           {:ok, options} <- validate_locale(options) do
         options
       end
     end
@@ -65,7 +72,7 @@ if Code.ensure_compiled?(Cldr.Currency) do
       Map.new(
         currencies: Cldr.known_currencies(),
         locale: Cldr.default_locale(),
-        mapper: &({&1.code <> " - " <> &1.name, &1.code}),
+        mapper: &{&1.code <> " - " <> &1.name, &1.code},
         selected: nil
       )
     end
