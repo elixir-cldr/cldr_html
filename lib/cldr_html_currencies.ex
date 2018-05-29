@@ -25,95 +25,95 @@ if Code.ensure_compiled?(Cldr.Currency) do
        => Cldr.Html.currency_select(:my_form, :currency, "USD", currencies: ["USD", "EUR", :JPY], mapper: &({&1.name, &1.code}))
 
     """
-    @spec currency_select(Phoenix.HTML.Form.t(), Phoenix.HTML.Form.field(), currency_select_options) :: Phoenix.HTML.safe() | {:error, {Cldr.UnknownCurrencyError, binary()}} | {:error, {Cldr.UnknownLocaleError, binary()}}
-    def currency_select(form, field, options \\ [selected: nil])
-    def currency_select(form, field, options) do
-      case validate_options(options) do
-        {:error, reason} -> {:error, reason}
+    @spec currency_select(form :: Phoenix.HTML.Form.t(), field :: Phoenix.HTML.Form.field(), currency_select_options) :: Phoenix.HTML.safe() | {:error, {Cldr.UnknownCurrencyError, binary()}} | {:error, {Cldr.UnknownLocaleError, binary()}}
+    def currency_select(form, field, options \\ [])
 
-        validated        -> do_currency_select(form, field, validated)
-      end
+    def currency_select(form, field, options) when is_list(options) do
+      currency_select(form, field, Map.new(options))
     end
 
-    defp do_currency_select(form, field, options) do
-      case options[:selected] do
-        nil      -> Phoenix.HTML.Form.select(form, field, currency_options(options))
+    def currency_select(form, field, %{} = options) do
+      currency_select(form, field, validate_options(options), options[:selected])
+    end
 
-        selected ->
-          options = maybe_include_selected_currency(options)
-          Phoenix.HTML.Form.select(form, field, currency_options(options), [selected: selected])
-      end
+    # Invalid options
+    def currency_select(_form, _field, {:error, reason}, _selected) do
+      {:error, reason}
+    end
+
+    # No selected currency
+    def currency_select(form, field, options, nil) do
+      Phoenix.HTML.Form.select(form, field, currency_options(options))
+    end
+
+    # Selected currency
+    def currency_select(form, field, options, selected) do
+      options = maybe_include_selected_currency(options)
+      Phoenix.HTML.Form.select(form, field, currency_options(options), [selected: selected])
     end
 
     defp validate_options(options) do
-      options
-      |> default_options()
-      |> validate_selected()
-      |> validate_currencies()
-      |> validate_locale()
-    end
-
-    defp default_options(options) do
-      options
-      |> Keyword.put_new(:currencies, Cldr.known_currencies())
-      |> Keyword.put_new(:locale, Cldr.default_locale())
-      |> Keyword.put_new(:mapper, &({&1.code <> " - " <> &1.name, &1.code}))
-    end
-
-    def validate_selected(options) do
-      case options[:selected] do
-        nil        -> options
-
-        selected   ->
-          case validate_currency(selected) do
-            {:error, reason} -> {:error, reason}
-
-            {:ok, _currency} -> options
-          end
+      with options <- Map.merge(default_options(), options),
+          {:ok, options} <- validate_selected(options),
+          {:ok, options} <- validate_currencies(options),
+          {:ok, options} <- validate_locale(options) do
+        options
       end
     end
 
-    defp validate_currencies({:error, reason}), do: {:error, reason}
-    defp validate_currencies(options) do
-      valiadeted_currencies = Enum.map(options[:currencies], &validate_currency/1)
+    defp default_options do
+      Map.new(
+        currencies: Cldr.known_currencies(),
+        locale: Cldr.default_locale(),
+        mapper: &({&1.code <> " - " <> &1.name, &1.code}),
+        selected: nil
+      )
+    end
 
-      case Enum.find(valiadeted_currencies, &unknown_currency?/1) do
+    defp validate_selected(%{selected: nil} = options) do
+      {:ok, options}
+    end
+
+    defp validate_selected(%{selected: selected} = options) do
+      with {:ok, currency} <- Cldr.validate_currency(selected) do
+        {:ok, Map.put(options, :selected, currency)}
+      end
+    end
+
+    # Return a list of validated currencies or an error
+    defp validate_currencies(%{currencies: currencies} = options) do
+      validate_currencies(currencies, options)
+    end
+
+    defp validate_currencies(currencies) when is_list(currencies) do
+      Enum.reduce_while(currencies, [], fn currency, acc ->
+        case Cldr.validate_currency(currency) do
+          {:ok, currency} -> {:cont, [currency | acc]}
+          {:error, reason} -> {:halt, {:error, reason}}
+        end
+      end)
+    end
+
+    defp validate_currencies(currencies, options) do
+      case validate_currencies(currencies) do
         {:error, reason} -> {:error, reason}
-
-        _                -> options
+        currencies -> {:ok, Map.put(options, :currencies, Enum.reverse(currencies))}
       end
     end
 
-    defp validate_currency(currency) do
-      Cldr.validate_currency(currency)
-    end
-
-    defp validate_locale({:error, reason}), do: {:error, reason}
-    defp validate_locale(options) do
-      case Cldr.validate_locale(options[:locale]) do
-        {:error, reason} -> {:error, reason}
-
-        {:ok, _}         -> options
+    defp validate_locale(%{locale: locale} = options) do
+      with {:ok, _locale} <- Cldr.validate_locale(locale) do
+        {:ok, Map.put(options, :locale, locale)}
       end
     end
 
-    defp maybe_include_selected_currency(options) do
-      selected = options[:selected]
-      currencies = Enum.reduce(options[:currencies], [], fn
-                        currency, acc when is_atom(currency)   -> [currency, Kernel.to_string(currency) | acc]
-
-                        currency, acc when is_binary(currency) -> [currency, String.to_existing_atom(currency) | acc]
-                   end)
-
-      case selected in currencies do
-        false -> Keyword.update(options, :currencies, [selected], &[selected | &1])
-
-        true  -> options
+    defp maybe_include_selected_currency(%{currencies: currencies, selected: selected} = options) do
+      if Enum.any?(currencies, &(&1 == selected)) do
+        options
+      else
+        Map.put(options, :currencies, [selected | currencies])
       end
     end
-
-    defp unknown_currency?({:error, {Cldr.UnknownCurrencyError, _reason}}), do: true
-    defp unknown_currency?({:ok, _code}), do: false
 
     defp currency_options(options) do
       options[:currencies]
