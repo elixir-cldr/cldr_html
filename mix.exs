@@ -7,6 +7,7 @@ defmodule Cldr.Html.MixProject do
     [
       app: :cldr_html,
       version: @version,
+      licenses: ["Apache-2.0"],
       elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
