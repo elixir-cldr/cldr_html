@@ -1,4 +1,4 @@
-if Code.ensure_compiled?(Cldr.Currency) do
+if Cldr.Code.ensure_compiled?(Cldr.Currency) do
   defmodule Cldr.HTML.Currency do
     @moduledoc """
     Implements `Phoenix.HTML.Form.select/4` specifically for
@@ -10,6 +10,7 @@ if Code.ensure_compiled?(Cldr.Currency) do
             {:currencies, [atom() | binary(), ...]}
             | {:locale, binary() | Cldr.LanguageTag.t()}
             | {:mapper, function()}
+            | {:backend, module()}
             | {:selected, atom() | binary()}
           ]
 
@@ -34,11 +35,14 @@ if Code.ensure_compiled?(Cldr.Currency) do
       the currencies returned by `Money.known_tender_currencies/0`
       if the package [ex_money](https://hex.pm/packages/ex_money)
       is installed otherwise it is the list returned by
-      `Cldr.known_currencies/1`
+      `Cldr.known_currencies/0`
 
     * `:locale` defines the locale to be used to localise the
       description of the currencies.  The default is the locale
       returned by `Cldr.default_locale/1`
+
+    * `:backend` is any backend module. The default is
+      `Cldr.default_backend!/0`
 
     * `:mapper` is a function that creates the text to be
       displayed in the select tag for each currency.  It is
@@ -111,6 +115,7 @@ if Code.ensure_compiled?(Cldr.Currency) do
       Map.new(
         currencies: default_currency_list(),
         locale: Cldr.default_locale(),
+        backend: Cldr.default_backend!(),
         mapper: &{&1.code <> " - " <> &1.name, &1.code},
         selected: nil
       )
@@ -167,7 +172,7 @@ if Code.ensure_compiled?(Cldr.Currency) do
 
     defp currency_options(options) do
       options[:currencies]
-      |> Enum.map(&Cldr.Currency.currency_for_code(&1, options[:locale]))
+      |> Enum.map(&Cldr.Currency.currency_for_code(&1, options.backend, options))
       |> Enum.map(fn {:ok, currency} -> options[:mapper].(currency) end)
       |> Enum.sort()
     end
