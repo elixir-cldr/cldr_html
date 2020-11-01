@@ -7,8 +7,7 @@ defmodule Cldr.Html.MixProject do
     [
       app: :cldr_html,
       version: @version,
-      licenses: ["Apache-2.0"],
-      elixir: "~> 1.5",
+      elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       compilers: Mix.compilers(),
@@ -29,9 +28,9 @@ defmodule Cldr.Html.MixProject do
       {:ex_cldr, "~> 2.18"},
       {:phoenix_html, "~> 1.2 or ~> 2.0"},
       {:ex_cldr_currencies, "~> 2.8", optional: true},
-      {:ex_money, "~> 3.0", optional: true},
+      {:ex_money, "~> 5.0", optional: true},
       {:jason, "~> 1.0", optional: true},
-      {:poison, "~> 2.1 or ~> 3.0", optional: true},
+      {:poison, "~> 2.1 or ~> 3.0 or ~> 4.0", optional: true},
       {:ex_doc, "~> 0.18", only: :dev},
     ]
   end
