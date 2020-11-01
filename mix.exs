@@ -79,7 +79,7 @@ defmodule Cldr.Html.MixProject do
       {:ex_money, "~> 5.0", optional: true},
       {:jason, "~> 1.0", optional: true},
       {:poison, "~> 2.1 or ~> 3.0 or ~> 4.0", optional: true},
-      {:ex_doc, "~> 0.18", only: :dev},
+      {:ex_doc, "~> 0.18", runtime: false},
     ]
   end
 
