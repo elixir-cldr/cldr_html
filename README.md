@@ -1,16 +1,16 @@
-# CldrHtml
+# Cldr HTML
 
 HTML helper functions for CLDR.
 
 # Usage
 
-* Select territories - by default using the territories where the configured locales are in use.
+* [Implemented] Select currencies - by default the currencies of the locales configured in the default backend
 
-* Select currencies - by default the currencies of the locales currently configured
+* [Not Implemented] Select territories
 
-* Select languages - by default using the configured locales
+* [Not Implemented] Select languages
 
-* Select days of the week and months of the year in a given locale
+* [Not Implemented] Select days of the week and months of the year in a given locale
 
 ## Installation
 
@@ -19,9 +19,9 @@ HTML helper functions for CLDR.
 ```elixir
 def deps do
   [
-    {:ex_cldr_html, "~> 0.1.0"}
+    {:ex_cldr_html, "~> 0.1"}
   ]
 end
 ```
-The documentations can be found at [https://hexdocs.pm/cldr_html](https://hexdocs.pm/cldr_html).
+The documentation can be found at [https://hexdocs.pm/cldr_html](https://hexdocs.pm/cldr_html).
 
