@@ -8,11 +8,25 @@ defmodule Cldr.Html.MixProject do
       app: :cldr_html,
       version: @version,
       elixir: "~> 1.8",
-      start_permanent: Mix.env() == :prod,
-      deps: deps(),
       compilers: Mix.compilers(),
-      elixirc_paths: elixirc_paths(Mix.env())
+      elixirc_paths: elixirc_paths(Mix.env()),
+      name: "Cldr HTML",
+      description: description(),
+      source_url: "https://github.com/elixir-cldr/cldr_html",
+      docs: docs(),
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
+      deps: deps(),
+      package: package(),
     ]
+  end
+
+  defp description do
+    """
+    HTML helper functions for the Common Locale Data
+    Repository (CLDR).
+    """
   end
 
   # Run "mix help compile.app" to learn about applications.
@@ -20,6 +34,40 @@ defmodule Cldr.Html.MixProject do
     [
       extra_applications: [:logger]
     ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Kip Cole"],
+      licenses: ["Apache 2.0"],
+      links: links(),
+      files: [
+        "lib",
+        "config",
+        "mix.exs",
+        "README*",
+        "CHANGELOG*",
+        "LICENSE*"
+      ]
+    ]
+  end
+
+  def docs do
+    [
+      source_ref: "v#{@version}",
+      main: "readme",
+      extras: ["README.md", "CHANGELOG.md", "LICENSE.md"],
+      logo: "logo.png",
+      skip_undefined_reference_warnings_on: ["changelog", "CHANGELOG.md"]
+    ]
+  end
+
+  def links do
+    %{
+      "GitHub" => "https://github.com/elixir-cldr/cldr_html",
+      "Readme" => "https://github.com/elixir-cldr/cldr_html/blob/v#{@version}/README.md",
+      "Changelog" => "https://github.com/elixir-cldr/cldr_html/blob/v#{@version}/CHANGELOG.md"
+    }
   end
 
   # Run "mix help deps" to learn about dependencies.

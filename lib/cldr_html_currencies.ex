@@ -35,7 +35,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
       the currencies returned by `Money.known_tender_currencies/0`
       if the package [ex_money](https://hex.pm/packages/ex_money)
       is installed otherwise it is the list returned by
-      `Cldr.known_currencies/1`
+      `Cldr.known_currencies/0`
 
     * `:locale` defines the locale to be used to localise the
       description of the currencies.  The default is the locale
