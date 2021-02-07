@@ -8,4 +8,9 @@ defmodule Cldr.HTML do
   if Cldr.Code.ensure_compiled?(Cldr.Currency) do
     defdelegate currency_select(form, field, options), to: Cldr.HTML.Currency, as: :select
   end
+
+  if Cldr.Code.ensure_compiled?(Cldr.Unit) do
+    defdelegate unit_select(form, field, options), to: Cldr.HTML.Unit, as: :select
+  end
+
 end

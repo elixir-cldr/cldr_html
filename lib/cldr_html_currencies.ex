@@ -8,7 +8,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
 
     @type select_options :: [
             {:currencies, [atom() | binary(), ...]}
-            | {:locale, binary() | Cldr.LanguageTag.t()}
+            | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
             | {:mapper, function()}
             | {:backend, module()}
             | {:selected, atom() | binary()}
@@ -39,7 +39,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
 
     * `:locale` defines the locale to be used to localise the
       description of the currencies.  The default is the locale
-      returned by `Cldr.default_locale/1`
+      returned by `Cldr.get_locale/1`
 
     * `:backend` is any backend module. The default is
       `Cldr.default_backend!/0`
@@ -114,7 +114,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
     defp default_options do
       Map.new(
         currencies: default_currency_list(),
-        locale: Cldr.default_locale(),
+        locale: Cldr.get_locale(),
         backend: Cldr.default_backend!(),
         mapper: &{&1.code <> " - " <> &1.name, &1.code},
         selected: nil

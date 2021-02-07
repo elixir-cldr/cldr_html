@@ -6,6 +6,8 @@ HTML helper functions for CLDR.
 
 * [Implemented] Select currencies - by default the currencies of the locales configured in the default backend
 
+* [Implemented] Select units - by default the units returned by `Cldr.Unit.known_units/0`
+
 * [Not Implemented] Select territories
 
 * [Not Implemented] Select languages
@@ -27,7 +29,7 @@ HTML helper functions for CLDR.
 ```elixir
 def deps do
   [
-    {:ex_cldr_html, "~> 0.1"}
+    {:ex_cldr_html, "~> 1.0"}
   ]
 end
 ```

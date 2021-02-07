@@ -1,7 +1,7 @@
 defmodule Cldr.Html.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
 
   def project do
     [
@@ -18,7 +18,11 @@ defmodule Cldr.Html.MixProject do
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
-      package: package()
+      package: package(),
+      dialyzer: [
+        ignore_warnings: ".dialyzer_ignore_warnings",
+        plt_add_apps: ~w(ex_money)a
+      ],
     ]
   end
 
@@ -73,13 +77,15 @@ defmodule Cldr.Html.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_cldr, "~> 2.18"},
+      {:ex_cldr, "~> 2.19"},
       {:phoenix_html, "~> 1.2 or ~> 2.0"},
       {:ex_cldr_currencies, "~> 2.8", optional: true},
       {:ex_money, "~> 5.0", optional: true},
+      {:ex_cldr_units, path: "../cldr_units"},
       {:jason, "~> 1.0", optional: true},
       {:poison, "~> 2.1 or ~> 3.0 or ~> 4.0", optional: true},
       {:ex_doc, "~> 0.18", runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
   end
 
