@@ -30,7 +30,6 @@ defmodule Cldr.HTML.Unit.Test do
                  :unit,
                  units: [:foot, :inch],
                  selected: :foot,
-                 currencies: ~w(:foot :inch),
                  locale: "th"
                )
              )

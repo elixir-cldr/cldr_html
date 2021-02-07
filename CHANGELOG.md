@@ -1,6 +1,6 @@
 # Changelog for Cldr_HTML v0.2.0
 
-This is the changelog for Cldr HTML v1.1.0 released on February 7th, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+This is the changelog for Cldr HTML v0.2.0 released on February 7th, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
 
 ### Enhancements
 
