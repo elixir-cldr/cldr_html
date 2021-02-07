@@ -75,10 +75,6 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
     def select(form, field, options \\ [])
 
     def select(form, field, options) when is_list(options) do
-      select(form, field, Map.new(options))
-    end
-
-    def select(form, field, %{} = options) do
       select(form, field, validate_options(options), options[:selected])
     end
 
@@ -103,6 +99,8 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
     end
 
     defp validate_options(options) do
+      options = Map.new(options)
+
       with options <- Map.merge(default_options(), options),
            {:ok, options} <- validate_selected(options),
            {:ok, options} <- validate_currencies(options),
@@ -172,7 +170,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
 
     defp currency_options(options) do
       options[:currencies]
-      |> Enum.map(&Cldr.Currency.currency_for_code(&1, options.backend, options))
+      |> Enum.map(&Cldr.Currency.currency_for_code(&1, options.backend, Map.to_list(options)))
       |> Enum.map(fn {:ok, currency} -> options[:mapper].(currency) end)
       |> Enum.sort()
     end
