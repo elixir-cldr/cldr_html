@@ -35,7 +35,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
       `Cldr.Unit.known_units_for_category/1`
 
     * `:style` is the style of unit name to be displayed and
-      must be one of the styles returned by `Cldr.Unit.available_styles/0`.
+      must be one of the styles returned by `Cldr.Unit.known_styles/0`.
       The current styles are :long, :short and :narrow.
       The default is style: :long.
 
