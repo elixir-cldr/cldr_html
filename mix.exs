@@ -77,11 +77,12 @@ defmodule Cldr.Html.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_cldr, "~> 2.19"},
+      {:ex_cldr, "~> 2.22"},
       {:phoenix_html, "~> 1.2 or ~> 2.0"},
       {:ex_cldr_currencies, "~> 2.8", optional: true},
+      {:ex_cldr_territories, "~> 2.2", optional: true},
       {:ex_money, "~> 5.0", optional: true},
-      {:ex_cldr_units, path: "../cldr_units"},
+      {:ex_cldr_units, "~> 3.5", optional: true},
       {:jason, "~> 1.0", optional: true},
       {:poison, "~> 2.1 or ~> 3.0 or ~> 4.0", optional: true},
       {:ex_doc, "~> 0.18", runtime: false},

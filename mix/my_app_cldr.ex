@@ -1,6 +1,6 @@
 defmodule MyApp.Cldr do
   use Cldr,
     locales: ["en", "th"],
-    providers: [Cldr.Number, Cldr.Unit]
+    providers: [Cldr.Number, Cldr.Unit, Cldr.Territory]
 
 end

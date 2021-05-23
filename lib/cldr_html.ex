@@ -13,4 +13,8 @@ defmodule Cldr.HTML do
     defdelegate unit_select(form, field, options), to: Cldr.HTML.Unit, as: :select
   end
 
+  if Cldr.Code.ensure_compiled?(Cldr.Territory) do
+    defdelegate territory_select(form, field, options), to: Cldr.HTML.Territory, as: :select
+  end
+
 end
