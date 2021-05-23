@@ -8,7 +8,7 @@ HTML helper functions for CLDR.
 
 * [Implemented] Select units - by default the units returned by `Cldr.Unit.known_units/0`
 
-* [Not Implemented] Select territories
+* [Implemented] Select territories - by default the territories returned by `Cldr.known_territories/0`
 
 * [Not Implemented] Select languages
 
@@ -29,7 +29,7 @@ HTML helper functions for CLDR.
 ```elixir
 def deps do
   [
-    {:ex_cldr_html, "~> 1.0"}
+    {:ex_cldr_html, "~> 0.3"}
   ]
 end
 ```
