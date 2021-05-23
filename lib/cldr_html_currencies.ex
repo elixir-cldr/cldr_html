@@ -102,9 +102,9 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
       options = Map.new(options)
 
       with options <- Map.merge(default_options(), options),
+           {:ok, options} <- validate_locale(options),
            {:ok, options} <- validate_selected(options),
-           {:ok, options} <- validate_currencies(options),
-           {:ok, options} <- validate_locale(options) do
+           {:ok, options} <- validate_currencies(options) do
         options
       end
     end
@@ -113,7 +113,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
       Map.new(
         currencies: default_currency_list(),
         locale: Cldr.get_locale(),
-        backend: Cldr.default_backend!(),
+        backend: nil,
         mapper: &{&1.code <> " - " <> &1.name, &1.code},
         selected: nil
       )
@@ -150,10 +150,19 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
       end
     end
 
-    defp validate_locale(%{locale: locale} = options) do
-      with {:ok, locale} <- Cldr.validate_locale(locale) do
-        {:ok, Map.put(options, :locale, locale)}
+    defp validate_locale(options) do
+      {locale, backend} = Cldr.locale_and_backend_from(options[:locale], options[:backend])
+
+      with {:ok, locale} <- Cldr.validate_locale(locale, backend) do
+        options
+        |> Map.put(:locale, locale)
+        |> Map.put(:backend, locale.backend)
+        |> wrap(:ok)
       end
+    end
+
+    defp wrap(term, atom) do
+      {atom, term}
     end
 
     defp maybe_include_selected_currency(%{selected: nil} = options) do

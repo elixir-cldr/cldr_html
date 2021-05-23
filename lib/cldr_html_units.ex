@@ -34,6 +34,11 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
       select. See `Cldr.Unit.known_units/0` and
       `Cldr.Unit.known_units_for_category/1`
 
+    * `:style` is the style of unit name to be displayed and
+      must be one of the styles returned by `Cldr.Unit.available_styles/0`.
+      The current styles are :long, :short and :narrow.
+      The default is style: :long.
+
     * `:locale` defines the locale to be used to localise the
       description of the units.  The default is the locale
       returned by `Cldr.get_locale/0`
@@ -97,9 +102,10 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
 
     defp validate_options(options) do
       with options <- Map.merge(default_options(), Map.new(options)),
+           {:ok, options} <- validate_locale(options),
            {:ok, options} <- validate_selected(options),
            {:ok, options} <- validate_units(options),
-           {:ok, options} <- validate_locale(options) do
+           {:ok, options} <- validate_style(options) do
         options
       end
     end
@@ -107,9 +113,10 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
     defp default_options do
       Map.new(
         units: default_unit_list(),
-        backend: Cldr.default_backend!(),
+        backend: nil,
         locale: Cldr.get_locale(),
         mapper: &{Cldr.Unit.display_name(&1, &2), &1},
+        style: :long,
         selected: nil
       )
     end
@@ -145,10 +152,25 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
       end
     end
 
-    defp validate_locale(%{locale: locale} = options) do
-      with {:ok, locale} <- Cldr.validate_locale(locale) do
-        {:ok, Map.put(options, :locale, locale)}
+    defp validate_style(options) do
+      with {:ok, style} <- Cldr.Unit.validate_style(options[:style]) do
+        {:ok, Map.put(options, :style, style)}
       end
+    end
+
+    defp validate_locale(options) do
+      {locale, backend} = Cldr.locale_and_backend_from(options[:locale], options[:backend])
+
+      with {:ok, locale} <- Cldr.validate_locale(locale, backend) do
+        options
+        |> Map.put(:locale, locale)
+        |> Map.put(:backend, locale.backend)
+        |> wrap(:ok)
+      end
+    end
+
+    defp wrap(term, atom) do
+      {atom, term}
     end
 
     defp maybe_include_selected_unit(%{selected: nil} = options) do

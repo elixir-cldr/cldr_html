@@ -1,7 +1,7 @@
 defmodule Cldr.Html.MixProject do
   use Mix.Project
 
-  @version "0.2.0"
+  @version "0.3.0"
 
   def project do
     [
@@ -21,7 +21,7 @@ defmodule Cldr.Html.MixProject do
       package: package(),
       dialyzer: [
         ignore_warnings: ".dialyzer_ignore_warnings",
-        plt_add_apps: ~w(ex_money)a
+        plt_add_apps: ~w(ex_money ex_cldr_units ex_cldr_territories ratio ex_cldr_numbers ex_cldr_currencies)a
       ],
     ]
   end

@@ -23,6 +23,25 @@ defmodule Cldr.HTML.Unit.Test do
 
     end
 
+    test "with selected unit and style" do
+      string = safe_to_string(
+               Cldr.HTML.Unit.select(
+                 :my_form,
+                 :unit,
+                 units: [:foot, :inch],
+                 selected: :foot,
+                 style: :narrow,
+                 currencies: ~w(:foot :inch)
+               )
+             )
+      assert string ==
+         ~s(<select id="my_form_unit" name="my_form[unit]">) <>
+         ~s(<option value="foot" selected>ft</option>) <>
+         ~s(<option value="inch">in</option>) <>
+         ~s(</select>)
+
+    end
+
     test "with locale" do
       string = safe_to_string(
                Cldr.HTML.Unit.select(
