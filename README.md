@@ -29,7 +29,7 @@ HTML helper functions for CLDR.
 ```elixir
 def deps do
   [
-    {:ex_cldr_html, "~> 0.3"}
+    {:cldr_html, "~> 0.3"}
   ]
 end
 ```

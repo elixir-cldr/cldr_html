@@ -1,7 +1,7 @@
 defmodule Cldr.Html.MixProject do
   use Mix.Project
 
-  @version "0.3.0"
+  @version "0.4.0"
 
   def project do
     [
@@ -85,7 +85,7 @@ defmodule Cldr.Html.MixProject do
       {:ex_cldr_units, "~> 3.5", optional: true},
       {:jason, "~> 1.0", optional: true},
       {:poison, "~> 2.1 or ~> 3.0 or ~> 4.0", optional: true},
-      {:ex_doc, "~> 0.18", runtime: false},
+      {:ex_doc, "~> 0.18", only: [:dev, :test, :release], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
   end
