@@ -91,7 +91,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
     defp select(form, field, options, _selected) do
       select_options =
         options
-        |> Map.take([:selected, :prompt])
+        |> Map.drop([:territories, :locale, :mapper, :backend])
         |> Map.to_list
 
       options =
