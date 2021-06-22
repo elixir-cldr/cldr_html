@@ -186,8 +186,18 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
 
       territories
       |> Enum.map(&territory_info(&1, options))
-      |> Enum.sort()
+      |> Enum.sort(&(compare_territories(&1, &2)))
       |> Enum.map(fn territory_info -> options[:mapper].(territory_info) end)
+    end
+
+    defp compare_territories(territory_1, territory_2) do
+      normalize_territory(territory_1) <= normalize_territory(territory_2)
+    end
+
+    defp normalize_territory(territory) do
+      territory.name
+      |> :unicode.characters_to_nfd_binary()
+      |> String.replace(~r/\W/u, "")
     end
 
     defp territory_info(territory, %{backend: backend} = options) do
