@@ -81,6 +81,7 @@ defmodule Cldr.Html.MixProject do
       {:phoenix_html, "~> 1.2 or ~> 2.0"},
       {:ex_cldr_currencies, "~> 2.8", optional: true},
       {:ex_cldr_territories, "~> 2.2", optional: true},
+      {:ex_cldr_collation, "~> 0.5", optional: true},
       {:ex_money, "~> 5.0", optional: true},
       {:ex_cldr_units, "~> 3.5", optional: true},
       {:jason, "~> 1.0", optional: true},

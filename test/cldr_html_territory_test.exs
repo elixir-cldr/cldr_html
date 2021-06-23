@@ -76,5 +76,24 @@ defmodule Cldr.HTML.Territory.Test do
          ~s(<option value="IT" selected>🇮🇹 อิตาลี</option>) <>
          ~s(</select>)
     end
+
+    test "with locale and case insensitive unicode collator" do
+      string = safe_to_string(
+               Cldr.HTML.Territory.select(
+                 :my_form,
+                 :territory,
+                 territories: [:US, :AU],
+                 selected: :IT,
+                 locale: "th",
+                 collator: &(Cldr.Collation.sort(&1, casing: :insensitive))
+               )
+             )
+      assert string ==
+         ~s(<select id="my_form_territory" name="my_form[territory]">) <>
+         ~s(<option value="IT" selected>🇮🇹 อิตาลี</option>) <>
+         ~s(<option value="US">🇺🇸 สหรัฐอเมริกา</option>) <>
+         ~s(<option value="AU">🇦🇺 ออสเตรเลีย</option>) <>
+         ~s(</select>)
+    end
   end
 end
