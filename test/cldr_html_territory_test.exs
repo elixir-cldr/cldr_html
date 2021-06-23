@@ -71,9 +71,9 @@ defmodule Cldr.HTML.Territory.Test do
              )
       assert string ==
          ~s(<select id="my_form_territory" name="my_form[territory]">) <>
+         ~s(<option value="US">🇺🇸 สหรัฐอเมริกา</option>) <>
          ~s(<option value="AU">🇦🇺 ออสเตรเลีย</option>) <>
          ~s(<option value="IT" selected>🇮🇹 อิตาลี</option>) <>
-         ~s(<option value="US">🇺🇸 สหรัฐอเมริกา</option>) <>
          ~s(</select>)
     end
   end

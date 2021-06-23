@@ -9,10 +9,25 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
     @type select_options :: [
             {:territories, [atom() | binary(), ...]}
             | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
+            | {:collator, function()}
             | {:mapper, function()}
             | {:backend, module()}
             | {:selected, atom() | binary()}
           ]
+
+    @typedoc """
+    Territory type passed to a collator for ordering in the select box.
+
+    The default collator orders by `:name` using Elixir standard
+    comparison which is by codepoint and is therefore not Unicode
+    aware.
+
+    """
+    @type territory :: %{
+      territory: atom(),
+      name: String.t(),
+      flag: String.t()
+    }
 
     @doc """
     Generate an HTML select tag for a territory list
@@ -46,11 +61,20 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
     * `:backend` is any backend module. The default is
       `Cldr.default_backend!/0`
 
+    * `:collator` is a function used to sort the territories
+      in the selection list. It is passed a list of maps where
+      each map represents a territory and has the keys `:territory`,
+      `:name` and `:flag`. See `t:territory`. The default collator
+      sorts by `name_1 < name_2`. As a result, default collation
+      sorts by code point which will not return expected results
+      for scripts other than Latin.
+
     * `:mapper` is a function that creates the text to be
       displayed in the select tag for each territory.  It is
-      passed the territory definition as a map containing the keys
-      `:territory_code`, `:name` and `:flag`.  The default function
-      is `&({&1.flag <> " " <> &1.name, &1.territory_code})`
+      passed the territory definition as a `t:territory` map
+      containing the keys `:territory_code`, `:name` and
+      `:flag`.  The default function is
+      `&({&1.flag <> " " <> &1.name, &1.territory_code})`
 
     * `:selected` identifies the territory that is to be selected
       by default in the `select` tag.  The default is `nil`. This
@@ -88,10 +112,11 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
     end
 
     # Selected territory
+    @omit_from_select_options [:territories, :locale, :mapper, :collator, :backend, :style]
     defp select(form, field, options, _selected) do
       select_options =
         options
-        |> Map.drop([:territories, :locale, :mapper, :backend])
+        |> Map.drop(@omit_from_select_options)
         |> Map.to_list
 
       options =
@@ -118,6 +143,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
         territories: default_territory_list(),
         locale: Cldr.get_locale(),
         backend: nil,
+        collator: &default_collator/1,
         mapper: &{&1.flag <> " " <> &1.name, &1.territory_code},
         selected: nil
       )
@@ -183,34 +209,48 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
 
     defp territory_options(options) do
       territories = Map.fetch!(options, :territories)
+      collator = Map.fetch!(options, :collator)
+      mapper = Map.fetch!(options, :mapper)
 
       territories
       |> Enum.map(&territory_info(&1, options))
-      |> Enum.sort()
-      |> Enum.map(fn territory_info -> options[:mapper].(territory_info) end)
+      |> collator.()
+      |> Enum.map(&mapper.(&1))
+    end
+
+    defp default_collator(territories) do
+      Enum.sort(territories, &default_comparator/2)
+    end
+
+    # Note that this is not a unicode aware comparison
+    defp default_comparator(territory_1, territory_2) do
+      territory_1.name < territory_2.name
     end
 
     defp territory_info(territory, %{backend: backend} = options) do
       options = info_options(options)
-
-      name =
-        with {:ok, name} <- Cldr.Territory.from_territory_code(territory, backend, options) do
-          name
-        else
-          {:error, {Cldr.UnknownStyleError, _}} ->
-            default_style_options = Keyword.delete(options, :style)
-            {:ok, name} = Cldr.Territory.from_territory_code(territory, backend, default_style_options)
-            name
-        end
-
-      flag =
-        with {:ok, flag} <- Cldr.Territory.to_unicode_flag(territory) do
-          flag
-        else
-          _ -> " "
-        end
+      name = name_from_territory(territory, backend, options)
+      flag = flag_from_territory(territory)
 
       %{territory_code: territory, name: name, flag: flag}
+    end
+
+    defp name_from_territory(territory, backend, options) do
+      with {:ok, name} <- Cldr.Territory.from_territory_code(territory, backend, options) do
+        name
+      else
+        {:error, {Cldr.UnknownStyleError, _}} ->
+          default_style_options = Keyword.delete(options, :style)
+          Cldr.Territory.from_territory_code!(territory, backend, default_style_options)
+      end
+    end
+
+    defp flag_from_territory(territory) do
+      with {:ok, flag} <- Cldr.Territory.to_unicode_flag(territory) do
+        flag
+      else
+        _ -> " "
+      end
     end
 
     defp info_options(%{locale: locale, style: style}) do
