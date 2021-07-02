@@ -1,7 +1,7 @@
 defmodule Cldr.Html.MixProject do
   use Mix.Project
 
-  @version "0.4.0"
+  @version "0.6.0"
 
   def project do
     [
@@ -77,13 +77,21 @@ defmodule Cldr.Html.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_cldr, "~> 2.22"},
-      {:phoenix_html, "~> 1.2 or ~> 2.0"},
-      {:ex_cldr_currencies, "~> 2.8", optional: true},
+      {:ex_cldr, "~> 2.23"},
+      {:ex_cldr_currencies, "~> 2.11", optional: true},
+      {:ex_cldr_units, "~> 3.7", optional: true},
+      {:ex_cldr_locale_display, "~> 1.0.0", optional: true},
+
+      # {:ex_cldr, path: "../cldr", override: true},
+      # {:ex_cldr_currencies, path: "../cldr_currencies", override: true},
+      # {:ex_cldr_units, path: "../cldr_units", override: true},
+      # {:ex_cldr_numbers, path: "../cldr_numbers", override: true},
+      # {:ex_cldr_locale_display, path: "../cldr_locale_display", override: true},
+
       {:ex_cldr_territories, "~> 2.2", optional: true},
       {:ex_cldr_collation, "~> 0.5", optional: true},
       {:ex_money, "~> 5.0", optional: true},
-      {:ex_cldr_units, "~> 3.5", optional: true},
+      {:phoenix_html, "~> 1.2 or ~> 2.0"},
       {:jason, "~> 1.0", optional: true},
       {:poison, "~> 2.1 or ~> 3.0 or ~> 4.0", optional: true},
       {:ex_doc, "~> 0.18", only: [:dev, :test, :release], runtime: false},

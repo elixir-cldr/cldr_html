@@ -79,10 +79,11 @@ defmodule Cldr.HTML.Currency.Test do
                )
              ) ==
                ~s(<select id="my_form_currency" name="my_form[currency]">) <>
-                 ~s(<option value="COP">COP - เปโซโคลอมเบีย</option>) <>
+                 ~s(<option value="USD">USD - ดอลลาร์สหรัฐ</option>) <>
                  ~s(<option value="EUR">EUR - ยูโร</option>) <>
+                 ~s(<option value="COP">COP - เปโซโคลอมเบีย</option>) <>
                  ~s(<option value="JPY">JPY - เยนญี่ปุ่น</option>) <>
-                 ~s(<option value="USD">USD - ดอลลาร์สหรัฐ</option>) <> ~s(</select>)
+                 ~s(</select>)
     end
 
     test "with invalid selected" do
@@ -104,7 +105,7 @@ defmodule Cldr.HTML.Currency.Test do
 
     test "with invalid locale" do
       assert Cldr.HTML.Currency.select(:my_form, :currency, locale: "invalid") ==
-               {:error, {Cldr.UnknownLocaleError, "The locale \"invalid\" is not known."}}
+               {:error, {Cldr.InvalidLanguageError, "The language \"invalid\" is invalid"}}
     end
   end
 end

@@ -12,7 +12,7 @@ defmodule Cldr.HTML.Unit.Test do
                  :unit,
                  units: [:foot, :inch],
                  selected: :foot,
-                 currencies: ~w(:foot :inch)
+                 units: [:foot, :inch]
                )
              )
       assert string ==
@@ -31,7 +31,7 @@ defmodule Cldr.HTML.Unit.Test do
                  units: [:foot, :inch],
                  selected: :foot,
                  style: :narrow,
-                 currencies: ~w(:foot :inch)
+                 units: [:foot, :inch]
                )
              )
       assert string ==

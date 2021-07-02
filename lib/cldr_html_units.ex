@@ -9,6 +9,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
     @type select_options :: [
             {:units, [atom() | binary(), ...]}
             | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
+            | {:collator, function()}
             | {:mapper, function()}
             | {:backend, module()}
             | {:selected, atom() | binary()}
@@ -46,10 +47,17 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
     * `:backend` is any backend module. The default is
       `Cldr.default_backend!/0`
 
+    * `:collator` is a function used to sort the units
+      in the selection list. It is passed a list of tuples where
+      each tuple is in the form `{unit_display_name, unit}`.
+      The default collator sorts by `name_1 < name_2`.
+      As a result, default collation sorts by code point which
+      will not return expected results for scripts other than Latin.
+
     * `:mapper` is a function that creates the text to be
       displayed in the select tag for each unit.  It is
-      passed the unit name.  The default function
-      is `&({Cldr.Unit.display_name(&1), &1})`
+      passed the a tuple of the form `{unit_display_name, unit}`,
+      The default is the identity function `&(&1)`.
 
     * `:selected` identifies the unit that is to be selected
       by default in the `select` tag.  The default is `nil`. This
@@ -61,8 +69,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
     # Examples
 
          => Cldr.HTML.Unit.select(:my_form, :unit, selected: :foot)
-         => Cldr.HTML.Unit.select(:my_form, :unit,
-             units: [:foot, :inch], mapper: &{Cldr.Unit.display_name(&1, &2), &1})
+         => Cldr.HTML.Unit.select(:my_form, :unit, units: [:foot, :inch])
 
     """
     @spec select(
@@ -86,10 +93,11 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
     end
 
     # Selected currency
+    @omit_from_select_options [:units, :locale, :mapper, :collator, :backend, :style]
     defp select(form, field, options, _selected) do
       select_options =
         options
-        |> Map.take([:selected, :prompt])
+        |> Map.drop(@omit_from_select_options)
         |> Map.to_list
 
       options =
@@ -115,10 +123,20 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
         units: default_unit_list(),
         backend: nil,
         locale: Cldr.get_locale(),
-        mapper: &{Cldr.Unit.display_name(&1, &2), &1},
+        collator: &default_collator/1,
+        mapper: &(&1),
         style: :long,
         selected: nil
       )
+    end
+
+    defp default_collator(units) do
+      Enum.sort(units, &default_comparator/2)
+    end
+
+    # Note that this is not a unicode aware comparison
+    defp default_comparator({unit_1, _}, {unit_2, _}) do
+      unit_1 < unit_2
     end
 
     defp validate_selected(%{selected: nil} = options) do
@@ -186,11 +204,21 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
     end
 
     defp unit_options(options) do
+      units = Map.fetch!(options, :units)
+      collator = Map.fetch!(options, :collator)
+      mapper = Map.fetch!(options, :mapper)
       options = Map.to_list(options)
 
-      options[:units]
-      |> Enum.map(fn unit -> options[:mapper].(unit, options) end)
-      |> Enum.sort()
+      units
+      |> Enum.map(&to_selection_tuple(&1, options))
+      |> collator.()
+      |> Enum.map(&mapper.(&1))
+    end
+
+    defp to_selection_tuple(unit, options) do
+      display_name = Cldr.Unit.display_name(unit, options)
+      unit_code = to_string(unit)
+      {display_name, unit_code}
     end
 
     defp default_unit_list() do

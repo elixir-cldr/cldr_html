@@ -1,5 +1,27 @@
 # Changelog
 
+## Cldr_HTML v0.6.0
+
+This is the changelog for Cldr HTML v0.6.0 released on _______, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Enhancements
+
+* Add `Cldr.HTML.Locale.select/3` to select locales
+
+## Cldr_HTML v0.5.0
+
+This is the changelog for Cldr HTML v0.5.0 released on June 23rd, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Bug Fixes
+
+* Correctly sort the selection list. Thanks to @0urobor0s for the collaboration
+
+* Pass options through to `Phoenix.HTML.Form.select/4`.  Thanks to @0urobor0s for the PR.
+
+### Enhancements
+
+* Adds a `:collator` option to the `Cldr.HTML.{Unit, Territory, Currency}.select/4`. This enables a library user to implement any desired collation on the select opions before rendering.
+
 ## Cldr_HTML v0.4.0
 
 This is the changelog for Cldr HTML v0.4.0 released on June 11th, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)

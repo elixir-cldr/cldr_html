@@ -9,6 +9,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
     @type select_options :: [
             {:currencies, [atom() | binary(), ...]}
             | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
+            | {:collator, function()}
             | {:mapper, function()}
             | {:backend, module()}
             | {:selected, atom() | binary()}
@@ -44,9 +45,16 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
     * `:backend` is any backend module. The default is
       `Cldr.default_backend!/0`
 
+    * `:collator` is a function used to sort the territories
+      in the selection list. It is passed a list of maps where
+      each map represents a `t:Cldr.Currency`. The default collator
+      sorts by `name_1 < name_2`. As a result, default collation
+      sorts by code point which will not return expected results
+      for scripts other than Latin.
+
     * `:mapper` is a function that creates the text to be
       displayed in the select tag for each currency.  It is
-      passed the currency definition `Cldr.Currency.t` as returned by
+      passed the currency definition `t:Cldr.Currency` as returned by
       `Cldr.Currency.currency_for_code/2`.  The default function
       is `&({&1.code <> " - " <> &1.name, &1.code})`
 
@@ -84,10 +92,11 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
     end
 
     # Selected currency
+    @omit_from_select_options [:currencies, :locale, :mapper, :collator, :backend]
     defp select(form, field, options, _selected) do
       select_options =
         options
-        |> Map.take([:selected, :prompt])
+        |> Map.drop(@omit_from_select_options)
         |> Map.to_list
 
       options =
@@ -114,9 +123,19 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
         currencies: default_currency_list(),
         locale: Cldr.get_locale(),
         backend: nil,
+        collator: &default_collator/1,
         mapper: &{&1.code <> " - " <> &1.name, &1.code},
         selected: nil
       )
+    end
+
+    defp default_collator(currencies) do
+      Enum.sort(currencies, &default_comparator/2)
+    end
+
+    # Note that this is not a unicode aware comparison
+    defp default_comparator(currency_1, currency_2) do
+      currency_1.name < currency_2.name
     end
 
     defp validate_selected(%{selected: nil} = options) do
@@ -178,10 +197,16 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
     end
 
     defp currency_options(options) do
-      options[:currencies]
-      |> Enum.map(&Cldr.Currency.currency_for_code(&1, options.backend, Map.to_list(options)))
-      |> Enum.map(fn {:ok, currency} -> options[:mapper].(currency) end)
-      |> Enum.sort()
+      currencies = Map.fetch!(options, :currencies)
+      collator = Map.fetch!(options, :collator)
+      mapper = Map.fetch!(options, :mapper)
+      backend = Map.fetch!(options, :backend)
+      options = Map.to_list(options)
+
+      currencies
+      |> Enum.map(&(Cldr.Currency.currency_for_code(&1, backend, options) |> elem(1)))
+      |> collator.()
+      |> Enum.map(&mapper.(&1))
     end
 
     # Default currency list to legal tender currencies
