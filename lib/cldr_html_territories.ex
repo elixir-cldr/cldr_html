@@ -10,7 +10,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
             {:territories, [atom() | binary(), ...]}
             | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
             | {:collator, function()}
-            | {:mapper, function()}
+            | {:mapper, (Cldr.Territory.t() -> String.t())}
             | {:backend, module()}
             | {:selected, atom() | binary()}
           ]
@@ -85,9 +85,11 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
 
     # Examples
 
-         => Cldr.HTML.Territory.select(:my_form, :territory, selected: :AU)
-         => Cldr.HTML.Territory.select(:my_form, :territory, selected: :AU, locale: "ar")
-         => Cldr.HTML.Territory.select(:my_form, :territory, territories: [:US, :AU, :JP],
+         Cldr.HTML.Territory.select(:my_form, :territory, selected: :AU)
+
+         Cldr.HTML.Territory.select(:my_form, :territory, selected: :AU, locale: "ar")
+
+         Cldr.HTML.Territory.select(:my_form, :territory, territories: [:US, :AU, :JP],
               mapper: &({&1.name, &1.territory_code}))
 
     """

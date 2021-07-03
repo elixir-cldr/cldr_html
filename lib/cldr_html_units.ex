@@ -10,7 +10,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
             {:units, [atom() | binary(), ...]}
             | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
             | {:collator, function()}
-            | {:mapper, function()}
+            | {:mapper, (Cldr.Unit.t() -> String.t())}
             | {:backend, module()}
             | {:selected, atom() | binary()}
           ]
@@ -135,7 +135,8 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
     end
 
     # Note that this is not a unicode aware comparison
-    defp default_comparator({unit_1, _}, {unit_2, _}) do
+    # It sorts by the display name
+    defp default_comparator({_, unit_1}, {_, unit_2}) do
       unit_1 < unit_2
     end
 

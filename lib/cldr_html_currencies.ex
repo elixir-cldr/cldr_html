@@ -10,7 +10,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
             {:currencies, [atom() | binary(), ...]}
             | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
             | {:collator, function()}
-            | {:mapper, function()}
+            | {:mapper, (Cldr.Currency.t() -> String.t())}
             | {:backend, module()}
             | {:selected, atom() | binary()}
           ]

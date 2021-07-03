@@ -1,271 +1,303 @@
-defmodule Cldr.HTML.Locale do
-  @moduledoc """
-  Implements `Phoenix.HTML.Form.select/4` specifically for
-  localised locale display.
+if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
+  defmodule Cldr.HTML.Locale do
+    @moduledoc """
+    Implements `Phoenix.HTML.Form.select/4` specifically for
+    localised locale display.
 
-  """
+    """
 
-  alias Cldr.Locale
+    alias Cldr.Locale
 
-  @type select_options :: [
-          {:locales, [atom() | binary(), ...]}
-          | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
-          | {:collator, function()}
-          | {:mapper, function()}
-          | {:backend, module()}
-          | {:selected, atom() | binary()}
-        ]
+    @type select_options :: [
+            {:locales, [atom() | binary(), ...]}
+            | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
+            | {:collator, function()}
+            | {:mapper, function()}
+            | {:backend, module()}
+            | {:selected, atom() | binary()}
+          ]
 
-  @type locale :: %{
-    locale: String.t(),
-    display_name: String.t(),
-    language_tag: Cldr.LanguageTag.t()
-  }
+    @type locale :: %{
+      locale: String.t(),
+      display_name: String.t(),
+      language_tag: Cldr.LanguageTag.t()
+    }
 
-  @type mapper :: (locale() -> String.t())
+    @type mapper :: (locale() -> String.t())
 
-  @identity :identity
+    @identity :identity
 
-  @doc """
-  Generate an HTML select tag for a locale list
-  that can be used with a `Phoenix.HTML.Form.t`.
+    # All configurations include these locales
+    # but they shouldn't be presented for
+    # display
+    @dont_include_default ["en-001", "root"]
 
-  ## Arguments
+    @doc """
+    Generate an HTML select tag for a locale list
+    that can be used with a `Phoenix.HTML.Form.t`.
 
-  * A `Phoenix.HTML.Form.t()` form
+    ## Arguments
 
-  * A `Phoenix.HTML.Form.field()` field
+    * A `Phoenix.HTML.Form.t()` form
 
-  * A `Keyword.t()` list of options
+    * A `Phoenix.HTML.Form.field()` field
 
-  ## Options
+    * A `Keyword.t()` list of options
 
-  For select options see `Phoenix.HTML.Form.select/4`
+    ## Options
 
-  * `:locales` defines the list of locales to be
-    displayed in the the `select` tag.  The list defaults to
-    `Cldr.known_locales/1`. If `:backend` is specified
-    then the list of locales known to that backend
-    is returned. If no `:backend` is specified the
-    locales known to `Cldr.default_backend!/0` is
-    returned.
+    For select options see `Phoenix.HTML.Form.select/4`
 
-  * `:locale` defines the locale to be used to localise the
-    description of the list of locales.  The default is the locale
-    returned by `Cldr.get_locale/1` If set to `:identity` then
-    each locale in the `:locales` list will be rendered in its
-    own locale.
+    * `:locales` defines the list of locales to be
+      displayed in the the `select` tag.  The list defaults to
+      `Cldr.known_locales/1`. If `:backend` is specified
+      then the list of locales known to that backend
+      is returned. If no `:backend` is specified the
+      locales known to `Cldr.default_backend!/0` is
+      returned.
 
-  * `:backend` is any backend module. The default is
-    `Cldr.default_backend!/0`
+    * `:locale` defines the locale to be used to localise the
+      description of the list of locales.  The default is the locale
+      returned by `Cldr.get_locale/1` If set to `:identity` then
+      each locale in the `:locales` list will be rendered in its
+      own locale.
 
-  * `:collator` is a function used to sort the locales
-    in the selection list. It is passed a list of maps where
-    each map represents a locale. The default collator
-    sorts by `locale_1.display_name < locale_2.display_name`.
-    As a result, default collation sorts by code point
-    which will not return expected results
-    for scripts other than Latin.
+    * `:backend` is any backend module. The default is
+      `Cldr.default_backend!/0`
 
-  * `:mapper` is a function that creates the text to be
-    displayed in the select tag for each locale.  It is
-    passed a map with three fields: `:display_name`, `:locale`
-    and `:language_tag`. The default mapper is
-    `&{&1.display_name, &1.locale}`. See `t:locale`.
+    * `:collator` is a function used to sort the locales
+      in the selection list. It is passed a list of maps where
+      each map represents a locale. The default collator
+      sorts by `locale_1.display_name < locale_2.display_name`.
+      As a result, default collation sorts by code point
+      which will not return expected results
+      for scripts other than Latin.
 
-  * `:selected` identifies the locale that is to be selected
-    by default in the `select` tag.  The default is `nil`. This
-    is passed to `Phoenix.HTML.Form.select/4`
+    * `:mapper` is a function that creates the text to be
+      displayed in the select tag for each locale.  It is
+      passed a map with three fields: `:display_name`, `:locale`
+      and `:language_tag`. The default mapper is
+      `&{&1.display_name, &1.locale}`. See `t:locale`.
 
-  * `:prompt` is a prompt displayed at the top of the select
-     box. This is passed unmodified to `Phoenix.HTML.Form.select/4`
+    * `:selected` identifies the locale that is to be selected
+      by default in the `select` tag.  The default is `nil`. This
+      is passed to `Phoenix.HTML.Form.select/4`
 
-  # Examples
+    * `:prompt` is a prompt displayed at the top of the select
+       box. This is passed unmodified to `Phoenix.HTML.Form.select/4`
 
-       Cldr.HTML.Currency.select(:my_form, :locale_list, selected: "en")
+    ## Notes
 
-       Cldr.HTML.Currency.select(:my_form, :locale_list,
-         locales: ["zh-Hant", "ar", "fr"],
-         mapper: &({&1.display_name, &1.locale}))
+    If `:locale` is set to `:identity` then each locale in
+    `:locales` will be used to render its own display name. In
+    this case each locale in `:locales` must also be configured
+    in the `:backend` or an error will be returned.
 
-  """
-  @spec select(
-          form :: Phoenix.HTML.Form.t(),
-          field :: Phoenix.HTML.Form.field(),
-          select_options
-        ) ::
-          Phoenix.HTML.safe()
-          | {:error, {Cldr.UnknownCurrencyError, binary()}}
-          | {:error, {Cldr.UnknownLocaleError, binary()}}
+    ## Examples
 
-  def select(form, field, options \\ [])
+         Cldr.HTML.Currency.select(:my_form, :locale_list, selected: "en")
 
-  def select(form, field, options) when is_list(options) do
-    select(form, field, validate_options(options), options[:selected])
-  end
+         Cldr.HTML.Currency.select(:my_form, :locale_list,
+           locales: ["zh-Hant", "ar", "fr"],
+           mapper: &({&1.display_name, &1.locale}))
 
-  # Invalid options
-  defp select(_form, _field, {:error, reason}, _selected) do
-    {:error, reason}
-  end
+    """
+    @spec select(
+            form :: Phoenix.HTML.Form.t(),
+            field :: Phoenix.HTML.Form.field(),
+            select_options
+          ) ::
+            Phoenix.HTML.safe()
+            | {:error, {Cldr.UnknownCurrencyError, binary()}}
+            | {:error, {Cldr.UnknownLocaleError, binary()}}
 
-  # Selected currency
-  @omit_from_select_options [
-    :locales, :locale, :mapper, :collator, :backend,
-    :add_likely_subtags, :prefer, :compound_locale
-  ]
+    def select(form, field, options \\ [])
 
-  defp select(form, field, options, _selected) do
-    select_options =
-      options
-      |> Map.drop(@omit_from_select_options)
-      |> Map.to_list
-
-    options =
-      options
-      |> maybe_include_selected_locale()
-      |> locale_options()
-
-    Phoenix.HTML.Form.select(form, field, options, select_options)
-  end
-
-  defp validate_options(options) do
-    options = Map.new(options)
-
-    with options <- Map.merge(default_options(), options),
-         {:ok, options} <- validate_locale(options.locale, options),
-         {:ok, options} <- validate_selected(options.selected, options),
-         {:ok, options} <- validate_locales(options.locales, options) do
-      options
+    def select(form, field, options) when is_list(options) do
+      select(form, field, validate_options(options), options[:selected])
     end
-  end
 
-  defp default_options do
-    Map.new(
-      locales: nil,
-      locale: Cldr.get_locale(),
-      backend: nil,
-      collator: &default_collator/1,
-      mapper: &{&1.display_name, &1.locale},
-      selected: nil,
-      add_likely_subtags: false,
-      compound_locale: false,
-      prefer: :default
-    )
-  end
-
-  defp default_collator(locales) do
-    Enum.sort(locales, &default_comparator/2)
-  end
-
-  # Note that this is not a unicode aware comparison
-  defp default_comparator(locale_1, locale_2) do
-    locale_1.display_name < locale_2.display_name
-  end
-
-  defp validate_selected(nil, options) do
-    {:ok, options}
-  end
-
-  defp validate_selected(selected, options) do
-    list_options =
-      options
-      |> Map.take([:add_likely_subtags])
-      |> Map.to_list()
-      |> IO.inspect
-
-    backend =
-      options[:backend]
-
-    with {:ok, locale} <- Locale.canonical_language_tag(selected, backend, list_options) do
-      {:ok, Map.put(options, :selected, locale)}
+    # Invalid options
+    defp select(_form, _field, {:error, reason}, _selected) do
+      {:error, reason}
     end
-  end
 
-  # Return a list of validated locales or an error
-  defp validate_locales(nil, options) do
-    validate_locales(Cldr.known_locale_names(options[:backend]), options)
-  end
+    # Selected currency
+    @omit_from_select_options [
+      :locales, :locale, :mapper, :collator, :backend,
+      :add_likely_subtags, :prefer, :compound_locale
+    ]
 
-  defp validate_locales(locales, options) when is_list(locales) do
-    list_options =
-      options
-      |> Map.take([:add_likely_subtags])
-      |> Map.to_list()
+    defp select(form, field, options, _selected) do
+      select_options =
+        options
+        |> Map.drop(@omit_from_select_options)
+        |> Map.to_list
 
-    backend =
-      options[:backend]
+      options =
+        options
+        |> maybe_include_selected_locale()
+        |> locale_options()
 
-    Enum.reduce_while(locales, [], fn locale, acc ->
-      case Locale.canonical_language_tag(locale, backend, list_options) do
-        {:ok, locale} -> {:cont, [locale | acc]}
-        {:error, reason} -> {:halt, {:error, reason}}
+      Phoenix.HTML.Form.select(form, field, options, select_options)
+    end
+
+    defp validate_options(options) do
+      options = Map.new(options)
+
+      with options <- Map.merge(default_options(), options),
+           {:ok, options} <- validate_locale(options.locale, options),
+           {:ok, options} <- validate_selected(options.selected, options),
+           {:ok, options} <- validate_locales(options.locales, options),
+           {:ok, options} <- validate_identity_locales(options.locale, options) do
+        options
       end
-    end)
-    |> case do
-      {:error, reason} -> {:error, reason}
-      locales -> {:ok, Map.put(options, :locales, locales)}
     end
-  end
 
-  defp validate_locale(:identity, options) do
-    {_locale, backend} = Cldr.locale_and_backend_from(nil, options[:backend])
-    {:ok, Map.put(options, :backend, backend)}
-  end
+    defp default_options do
+      Map.new(
+        locales: nil,
+        locale: Cldr.get_locale(),
+        backend: nil,
+        collator: &default_collator/1,
+        mapper: &{&1.display_name, &1.locale},
+        selected: nil,
+        add_likely_subtags: false,
+        compound_locale: false,
+        prefer: :default
+      )
+    end
 
-  defp validate_locale(locale, options) do
-    {locale, backend} = Cldr.locale_and_backend_from(locale, options.backend)
-    with {:ok, locale} <- Cldr.validate_locale(locale, backend) do
+    defp default_collator(locales) do
+      Enum.sort(locales, &default_comparator/2)
+    end
+
+    # Note that this is not a unicode aware comparison
+    defp default_comparator(locale_1, locale_2) do
+      locale_1.display_name < locale_2.display_name
+    end
+
+    defp validate_selected(nil, options) do
+      {:ok, options}
+    end
+
+    defp validate_selected(selected, options) do
+      list_options =
+        options
+        |> Map.take([:add_likely_subtags])
+        |> Map.to_list()
+
+      backend =
+        options[:backend]
+
+      with {:ok, locale} <- Locale.canonical_language_tag(selected, backend, list_options) do
+        {:ok, Map.put(options, :selected, locale)}
+      end
+    end
+
+    # Return a list of validated locales or an error
+    defp validate_locales(nil, options) do
+      default_locales = Cldr.known_locale_names(options[:backend]) -- @dont_include_default
+      validate_locales(default_locales, options)
+    end
+
+    defp validate_locales(locales, options) when is_list(locales) do
+      list_options =
+        options
+        |> Map.take([:add_likely_subtags])
+        |> Map.to_list()
+
+      backend =
+        options[:backend]
+
+      Enum.reduce_while(locales, [], fn locale, acc ->
+        case Locale.canonical_language_tag(locale, backend, list_options) do
+          {:ok, locale} -> {:cont, [locale | acc]}
+          {:error, reason} -> {:halt, {:error, reason}}
+        end
+      end)
+      |> case do
+        {:error, reason} -> {:error, reason}
+        locales -> {:ok, Map.put(options, :locales, locales)}
+      end
+    end
+
+    defp validate_identity_locales(@identity, options) do
+      Enum.reduce_while(options.locales, {:ok, options}, fn locale, acc ->
+        case Cldr.validate_locale(locale, options.backend) do
+          {:ok, _locale} -> {:cont, acc}
+          {:error, reason} -> {:halt, {:error, reason}}
+        end
+      end)
+    end
+
+    defp validate_identity_locales(_locale, options) do
       options
-      |> Map.put(:locale, locale)
-      |> Map.put(:backend, locale.backend)
-      |> wrap(:ok)
     end
-  end
 
-  defp wrap(term, atom) do
-    {atom, term}
-  end
+    defp validate_locale(:identity, options) do
+      {_locale, backend} = Cldr.locale_and_backend_from(nil, options[:backend])
+      {:ok, Map.put(options, :backend, backend)}
+    end
 
-  defp maybe_include_selected_locale(%{selected: nil} = options) do
-    options
-  end
+    defp validate_locale(locale, options) do
+      {locale, backend} = Cldr.locale_and_backend_from(locale, options.backend)
+      with {:ok, locale} <- Cldr.validate_locale(locale, backend) do
+        options
+        |> Map.put(:locale, locale)
+        |> Map.put(:backend, locale.backend)
+        |> wrap(:ok)
+      end
+    end
 
-  defp maybe_include_selected_locale(%{locales: locales, selected: selected} = options) do
-    if Enum.any?(locales, &(&1.canonical_locale_name == selected.canonical_locale_name)) do
+    defp wrap(term, atom) do
+      {atom, term}
+    end
+
+    defp maybe_include_selected_locale(%{selected: nil} = options) do
       options
-    else
-      Map.put(options, :locales, [selected | locales])
     end
-  end
 
-  defp locale_options(options) do
-    locales = Map.fetch!(options, :locales)
-    locale = Map.fetch!(options, :locale)
-    collator = Map.fetch!(options, :collator)
-    mapper = Map.fetch!(options, :mapper)
-    display_options = Map.take(options, [:prefer, :compound_locale]) |> Map.to_list()
+    defp maybe_include_selected_locale(%{locales: locales, selected: selected} = options) do
+      if Enum.any?(locales, &(&1.canonical_locale_name == selected.canonical_locale_name)) do
+        options
+      else
+        Map.put(options, :locales, [selected | locales])
+      end
+    end
 
-    locales
-    |> Enum.map(&display_name(&1, locale, display_options))
-    |> collator.()
-    |> Enum.map(&mapper.(&1))
-  end
+    defp locale_options(options) do
+      locales = Map.fetch!(options, :locales)
+      locale = Map.fetch!(options, :locale)
+      collator = Map.fetch!(options, :collator)
+      mapper = Map.fetch!(options, :mapper)
+      display_options = Map.take(options, [:prefer, :compound_locale]) |> Map.to_list()
 
-  defp display_name(locale, @identity, options) do
-    options = Keyword.put(options, :locale, locale)
-    display_name = Cldr.LocaleDisplay.display_name!(locale, options)
-    %{locale: locale.canonical_locale_name, display_name: display_name, language_tag: locale}
-  end
+      locales
+      |> Enum.map(&display_name(&1, locale, display_options))
+      |> collator.()
+      |> Enum.map(&mapper.(&1))
+    end
 
-  defp display_name(locale, _in_locale, options) do
-    display_name = Cldr.LocaleDisplay.display_name!(locale, options)
-    %{locale: locale.canonical_locale_name, display_name: display_name, language_tag: locale}
-  end
+    defp display_name(locale, @identity, options) do
+      if is_nil(locale.cldr_locale_name) do
+        raise Cldr.UnknownLocaleError, "The locale #{locale.canonical_locale_name} is not known"
+      end
 
-  defimpl Phoenix.HTML.Safe, for: Cldr.LanguageTag do
-    def to_iodata(language_tag) do
-      language_tag.canonical_locale_name
+      options = Keyword.put(options, :locale, locale)
+      display_name = Cldr.LocaleDisplay.display_name!(locale, options)
+      %{locale: locale.canonical_locale_name, display_name: display_name, language_tag: locale}
+    end
+
+    defp display_name(locale, _in_locale, options) do
+      display_name = Cldr.LocaleDisplay.display_name!(locale, options)
+      %{locale: locale.canonical_locale_name, display_name: display_name, language_tag: locale}
+    end
+
+    defimpl Phoenix.HTML.Safe, for: Cldr.LanguageTag do
+      def to_iodata(language_tag) do
+        language_tag.canonical_locale_name
+      end
     end
   end
 end
