@@ -1,13 +1,13 @@
 defmodule Cldr.Html.MixProject do
   use Mix.Project
 
-  @version "0.6.0"
+  @version "1.0.0"
 
   def project do
     [
       app: :cldr_html,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.10",
       compilers: Mix.compilers(),
       elixirc_paths: elixirc_paths(Mix.env()),
       name: "Cldr HTML",
@@ -21,7 +21,7 @@ defmodule Cldr.Html.MixProject do
       package: package(),
       dialyzer: [
         ignore_warnings: ".dialyzer_ignore_warnings",
-        plt_add_apps: ~w(ex_money ex_cldr_units ex_cldr_territories ratio ex_cldr_numbers ex_cldr_currencies)a
+        plt_add_apps: ~w(ex_money ex_cldr_units ex_cldr_territories ex_cldr_locale_display ratio ex_cldr_numbers ex_cldr_currencies)a
       ],
     ]
   end
@@ -80,14 +80,7 @@ defmodule Cldr.Html.MixProject do
       {:ex_cldr, "~> 2.23"},
       {:ex_cldr_currencies, "~> 2.11", optional: true},
       {:ex_cldr_units, "~> 3.7", optional: true},
-      {:ex_cldr_locale_display, "~> 1.0.0", optional: true},
-
-      # {:ex_cldr, path: "../cldr", override: true},
-      # {:ex_cldr_currencies, path: "../cldr_currencies", override: true},
-      # {:ex_cldr_units, path: "../cldr_units", override: true},
-      # {:ex_cldr_numbers, path: "../cldr_numbers", override: true},
-      # {:ex_cldr_locale_display, path: "../cldr_locale_display", override: true},
-
+      {:ex_cldr_locale_display, "~> 1.0", optional: true},
       {:ex_cldr_territories, "~> 2.2", optional: true},
       {:ex_cldr_collation, "~> 0.5", optional: true},
       {:ex_money, "~> 5.0", optional: true},

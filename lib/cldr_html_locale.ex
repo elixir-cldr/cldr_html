@@ -5,6 +5,8 @@ defmodule Cldr.HTML.Locale do
 
   """
 
+  alias Cldr.Locale
+
   @type select_options :: [
           {:locales, [atom() | binary(), ...]}
           | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
@@ -13,6 +15,14 @@ defmodule Cldr.HTML.Locale do
           | {:backend, module()}
           | {:selected, atom() | binary()}
         ]
+
+  @type locale :: %{
+    locale: String.t(),
+    display_name: String.t(),
+    language_tag: Cldr.LanguageTag.t()
+  }
+
+  @type mapper :: (locale() -> String.t())
 
   @identity :identity
 
@@ -37,42 +47,46 @@ defmodule Cldr.HTML.Locale do
     `Cldr.known_locales/1`. If `:backend` is specified
     then the list of locales known to that backend
     is returned. If no `:backend` is specified the
-    localed known to `Cldr.default_backend!/0` is
+    locales known to `Cldr.default_backend!/0` is
     returned.
 
   * `:locale` defines the locale to be used to localise the
-    description of the currencies.  The default is the locale
+    description of the list of locales.  The default is the locale
     returned by `Cldr.get_locale/1` If set to `:identity` then
-    each locale in the `:locales` list will be rendered in it
+    each locale in the `:locales` list will be rendered in its
     own locale.
 
   * `:backend` is any backend module. The default is
     `Cldr.default_backend!/0`
 
-  * `:collator` is a function used to sort the territories
+  * `:collator` is a function used to sort the locales
     in the selection list. It is passed a list of maps where
-    each map represents a `t:Cldr.Currency`. The default collator
-    sorts by `name_1 < name_2`. As a result, default collation
-    sorts by code point which will not return expected results
+    each map represents a locale. The default collator
+    sorts by `locale_1.display_name < locale_2.display_name`.
+    As a result, default collation sorts by code point
+    which will not return expected results
     for scripts other than Latin.
 
   * `:mapper` is a function that creates the text to be
-    displayed in the select tag for each currency.  It is
-    passed the currency definition `t:Cldr.Currency` as returned by
-    `Cldr.Currency.currency_for_code/2`.  The default function
-    is `&({&1.code <> " - " <> &1.name, &1.code})`
+    displayed in the select tag for each locale.  It is
+    passed a map with three fields: `:display_name`, `:locale`
+    and `:language_tag`. The default mapper is
+    `&{&1.display_name, &1.locale}`. See `t:locale`.
 
-  * `:selected` identifies the currency that is to be selected
+  * `:selected` identifies the locale that is to be selected
     by default in the `select` tag.  The default is `nil`. This
-    is passed unmodified to `Phoenix.HTML.Form.select/4`
+    is passed to `Phoenix.HTML.Form.select/4`
 
   * `:prompt` is a prompt displayed at the top of the select
      box. This is passed unmodified to `Phoenix.HTML.Form.select/4`
 
   # Examples
 
-       => Cldr.HTML.Currency.select(:my_form, :currency, selected: :USD)
-       => Cldr.HTML.Currency.select(:my_form, :currency, currencies: ["USD", "EUR", :JPY], mapper: &({&1.name, &1.code}))
+       Cldr.HTML.Currency.select(:my_form, :locale_list, selected: "en")
+
+       Cldr.HTML.Currency.select(:my_form, :locale_list,
+         locales: ["zh-Hant", "ar", "fr"],
+         mapper: &({&1.display_name, &1.locale}))
 
   """
   @spec select(
@@ -135,7 +149,8 @@ defmodule Cldr.HTML.Locale do
       mapper: &{&1.display_name, &1.locale},
       selected: nil,
       add_likely_subtags: false,
-      compound_locale: false
+      compound_locale: false,
+      prefer: :default
     )
   end
 
@@ -153,28 +168,43 @@ defmodule Cldr.HTML.Locale do
   end
 
   defp validate_selected(selected, options) do
-    with {:ok, locale} <- Cldr.validate_locale(selected, options.backend) do
+    list_options =
+      options
+      |> Map.take([:add_likely_subtags])
+      |> Map.to_list()
+      |> IO.inspect
+
+    backend =
+      options[:backend]
+
+    with {:ok, locale} <- Locale.canonical_language_tag(selected, backend, list_options) do
       {:ok, Map.put(options, :selected, locale)}
     end
   end
 
-  # Return a list of validated currencies or an error
+  # Return a list of validated locales or an error
   defp validate_locales(nil, options) do
     validate_locales(Cldr.known_locale_names(options[:backend]), options)
   end
 
   defp validate_locales(locales, options) when is_list(locales) do
-    list_options = Map.to_list(options)
+    list_options =
+      options
+      |> Map.take([:add_likely_subtags])
+      |> Map.to_list()
+
+    backend =
+      options[:backend]
 
     Enum.reduce_while(locales, [], fn locale, acc ->
-      case Cldr.Locale.canonical_language_tag(locale, options[:backend], list_options) do
+      case Locale.canonical_language_tag(locale, backend, list_options) do
         {:ok, locale} -> {:cont, [locale | acc]}
         {:error, reason} -> {:halt, {:error, reason}}
       end
     end)
     |> case do
       {:error, reason} -> {:error, reason}
-      locales -> Map.put(options, :locales, locales)
+      locales -> {:ok, Map.put(options, :locales, locales)}
     end
   end
 
@@ -202,7 +232,7 @@ defmodule Cldr.HTML.Locale do
   end
 
   defp maybe_include_selected_locale(%{locales: locales, selected: selected} = options) do
-    if Enum.any?(locales, &(&1 == selected)) do
+    if Enum.any?(locales, &(&1.canonical_locale_name == selected.canonical_locale_name)) do
       options
     else
       Map.put(options, :locales, [selected | locales])
@@ -211,12 +241,13 @@ defmodule Cldr.HTML.Locale do
 
   defp locale_options(options) do
     locales = Map.fetch!(options, :locales)
+    locale = Map.fetch!(options, :locale)
     collator = Map.fetch!(options, :collator)
     mapper = Map.fetch!(options, :mapper)
-    options = Map.to_list(options)
+    display_options = Map.take(options, [:prefer, :compound_locale]) |> Map.to_list()
 
     locales
-    |> Enum.map(&display_name(&1, options[:locale], options))
+    |> Enum.map(&display_name(&1, locale, display_options))
     |> collator.()
     |> Enum.map(&mapper.(&1))
   end
@@ -224,13 +255,18 @@ defmodule Cldr.HTML.Locale do
   defp display_name(locale, @identity, options) do
     options = Keyword.put(options, :locale, locale)
     display_name = Cldr.LocaleDisplay.display_name!(locale, options)
-    %{locale: locale.cldr_locale_name, display_name: display_name, language_tag: locale}
+    %{locale: locale.canonical_locale_name, display_name: display_name, language_tag: locale}
   end
 
   defp display_name(locale, _in_locale, options) do
     display_name = Cldr.LocaleDisplay.display_name!(locale, options)
-    %{locale: locale.cldr_locale_name, display_name: display_name, language_tag: locale}
+    %{locale: locale.canonical_locale_name, display_name: display_name, language_tag: locale}
   end
 
+  defimpl Phoenix.HTML.Safe, for: Cldr.LanguageTag do
+    def to_iodata(language_tag) do
+      language_tag.canonical_locale_name
+    end
+  end
 end
 

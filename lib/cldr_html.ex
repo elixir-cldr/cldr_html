@@ -17,4 +17,8 @@ defmodule Cldr.HTML do
     defdelegate territory_select(form, field, options), to: Cldr.HTML.Territory, as: :select
   end
 
+  if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
+    defdelegate locale_select(form, field, options), to: Cldr.HTML.Locale, as: :select
+  end
+
 end

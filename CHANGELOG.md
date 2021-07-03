@@ -1,12 +1,12 @@
 # Changelog
 
-## Cldr_HTML v0.6.0
+## Cldr_HTML v1.0.0
 
-This is the changelog for Cldr HTML v0.6.0 released on _______, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+This is the changelog for Cldr HTML v1.0.0 released on July 3rd, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
 
 ### Enhancements
 
-* Add `Cldr.HTML.Locale.select/3` to select locales
+* Add `Cldr.HTML.Locale.select/3` to select locales.
 
 ## Cldr_HTML v0.5.0
 

@@ -45,7 +45,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
     * `:backend` is any backend module. The default is
       `Cldr.default_backend!/0`
 
-    * `:collator` is a function used to sort the territories
+    * `:collator` is a function used to sort the currencies
       in the selection list. It is passed a list of maps where
       each map represents a `t:Cldr.Currency`. The default collator
       sorts by `name_1 < name_2`. As a result, default collation
