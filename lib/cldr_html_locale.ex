@@ -50,7 +50,7 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
 
     * `:locales` defines the list of locales to be
       displayed in the the `select` tag.  The list defaults to
-      `Cldr.known_locales/1`. If `:backend` is specified
+      `Cldr.known_locale_names/0`. If `:backend` is specified
       then the list of locales known to that backend
       is returned. If no `:backend` is specified the
       locales known to `Cldr.default_backend!/0` is

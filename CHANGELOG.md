@@ -1,5 +1,13 @@
 # Changelog
 
+## Cldr_HTML v1.0.1
+
+This is the changelog for Cldr HTML v1.0.1 released on September 2nd, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Bug Fixes
+
+* Use `Cldr.Territory.country_codes/0` as the default territory list. Previously `Cldr.known_territories/0` was used. However that function returns a list of valid codes, not "known to CLDR" codes (which also needs fixing). Thanks to @walu-lila for the report. Fixes #10.
+
 ## Cldr_HTML v1.0.0
 
 This is the changelog for Cldr HTML v1.0.0 released on July 3rd, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)

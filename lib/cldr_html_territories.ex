@@ -10,7 +10,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
             {:territories, [atom() | binary(), ...]}
             | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
             | {:collator, function()}
-            | {:mapper, (Cldr.Territory.t() -> String.t())}
+            | {:mapper, (Cldr.Locale.territory() -> String.t())}
             | {:backend, module()}
             | {:selected, atom() | binary()}
           ]
@@ -47,7 +47,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
 
     * `:territories` defines the list of territories to be
       displayed in the the `select` tag.  The list defaults to
-      the territories returned by `Cldr.known_territories/0`.
+      the territories returned by `Cldr.Territory.country_codes/0`.
 
     * `:style` is the format of the territory name to be used.
       The options are `:standard` (the default), `:short` and `:variant`.
@@ -267,11 +267,8 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
       [style: style]
     end
 
-    # Default territory list to legal tender territories
-    # if Money is available, otherwise the full list of
-    # Cldr territories (which is almost identitical to ISO4217)
     defp default_territory_list() do
-      Cldr.known_territories()
+      Cldr.Territory.country_codes()
     end
   end
 end
