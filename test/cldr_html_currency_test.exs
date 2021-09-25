@@ -25,7 +25,7 @@ defmodule Cldr.HTML.Currency.Test do
                  ~s(<option value="COP">COP - Colombian Peso</option>) <>
                  ~s(<option value="EUR">EUR - Euro</option>) <>
                  ~s(<option value="JPY">JPY - Japanese Yen</option>) <>
-                 ~s(<option value="USD" selected>USD - US Dollar</option>) <> ~s(</select>)
+                 ~s(<option selected value="USD">USD - US Dollar</option>) <> ~s(</select>)
             )
 
     end
@@ -64,7 +64,7 @@ defmodule Cldr.HTML.Currency.Test do
                  ~s(<select id="my_form_currency" name="my_form[currency]">) <>
                  ~s(<option value="EUR">EUR - Euro</option>) <>
                  ~s(<option value="JPY">JPY - Japanese Yen</option>) <>
-                 ~s(<option value="USD" selected>USD - US Dollar</option>) <> ~s(</select>)
+                 ~s(<option selected value="USD">USD - US Dollar</option>) <> ~s(</select>)
               )
 
     end

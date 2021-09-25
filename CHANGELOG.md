@@ -1,5 +1,13 @@
 # Changelog
 
+## Cldr_HTML v1.1.0
+
+This is the changelog for Cldr HTML v1.1.0 released on September 25th, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Bug Fixes
+
+* Support `phoenix_html` version 3.0 in additional to earlier releases.
+
 ## Cldr_HTML v1.0.1
 
 This is the changelog for Cldr HTML v1.0.1 released on September 2nd, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)

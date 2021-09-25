@@ -19,7 +19,7 @@ defmodule Cldr.HTML.Locale.Test do
         ~s{<option value="ar">Arabic</option>} <>
         ~s{<option value="zh-Hans">Chinese (Simplified)</option>} <>
         ~s{<option value="zh-Hant">Chinese (Traditional)</option>} <>
-        ~s{<option value="en" selected>English</option>} <>
+        ~s{<option selected value="en">English</option>} <>
         ~s{<option value="ja">Japanese</option>} <>
         ~s{</select>}
 

@@ -1,7 +1,7 @@
 defmodule Cldr.Html.MixProject do
   use Mix.Project
 
-  @version "1.0.1"
+  @version "1.1.0"
 
   def project do
     [
@@ -43,7 +43,7 @@ defmodule Cldr.Html.MixProject do
   defp package do
     [
       maintainers: ["Kip Cole"],
-      licenses: ["Apache 2.0"],
+      licenses: ["Apache-2.0"],
       links: links(),
       files: [
         "lib",
@@ -84,7 +84,7 @@ defmodule Cldr.Html.MixProject do
       {:ex_cldr_territories, "~> 2.2", optional: true},
       {:ex_cldr_collation, "~> 0.5", optional: true},
       {:ex_money, "~> 5.0", optional: true},
-      {:phoenix_html, "~> 1.2 or ~> 2.0"},
+      {:phoenix_html, "~> 1.2 or ~> 2.0 or ~> 3.0"},
       {:jason, "~> 1.0", optional: true},
       {:poison, "~> 2.1 or ~> 3.0 or ~> 4.0", optional: true},
       {:ex_doc, "~> 0.18", only: [:dev, :test, :release], runtime: false},

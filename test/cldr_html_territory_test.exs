@@ -16,7 +16,7 @@ defmodule Cldr.HTML.Territory.Test do
              )
       assert string ==
         ~s(<select id="my_form_territory" name="my_form[territory]">) <>
-        ~s(<option value="AU" selected>🇦🇺 Australia</option>) <>
+        ~s(<option selected value="AU">🇦🇺 Australia</option>) <>
         ~s(<option value="HK">🇭🇰 Hong Kong SAR China</option>) <>
         ~s(<option value="US">🇺🇸 United States</option>) <>
         ~s(</select>)
@@ -36,7 +36,7 @@ defmodule Cldr.HTML.Territory.Test do
              )
       assert string ==
         ~s(<select id="my_form_territory" name="my_form[territory]">) <>
-        ~s(<option value="AU" selected>🇦🇺 Australia</option>) <>
+        ~s(<option selected value="AU">🇦🇺 Australia</option>) <>
         ~s(<option value=\"HK\">🇭🇰 Hong Kong</option>) <>
         ~s(<option value="US">🇺🇸 US</option>) <>
         ~s(</select>)
@@ -54,7 +54,7 @@ defmodule Cldr.HTML.Territory.Test do
              )
       assert string ==
         ~s(<select id="my_form_territory" name="my_form[territory]">) <>
-        ~s(<option value="CZ" selected>🇨🇿 Czech Republic</option>) <>
+        ~s(<option selected value="CZ">🇨🇿 Czech Republic</option>) <>
         ~s(<option value="US">🇺🇸 United States</option>) <>
         ~s(</select>)
     end
@@ -73,7 +73,7 @@ defmodule Cldr.HTML.Territory.Test do
          ~s(<select id="my_form_territory" name="my_form[territory]">) <>
          ~s(<option value="US">🇺🇸 สหรัฐอเมริกา</option>) <>
          ~s(<option value="AU">🇦🇺 ออสเตรเลีย</option>) <>
-         ~s(<option value="IT" selected>🇮🇹 อิตาลี</option>) <>
+         ~s(<option selected value="IT">🇮🇹 อิตาลี</option>) <>
          ~s(</select>)
     end
 
@@ -90,7 +90,7 @@ defmodule Cldr.HTML.Territory.Test do
              )
       assert string ==
          ~s(<select id="my_form_territory" name="my_form[territory]">) <>
-         ~s(<option value="IT" selected>🇮🇹 อิตาลี</option>) <>
+         ~s(<option selected value="IT">🇮🇹 อิตาลี</option>) <>
          ~s(<option value="US">🇺🇸 สหรัฐอเมริกา</option>) <>
          ~s(<option value="AU">🇦🇺 ออสเตรเลีย</option>) <>
          ~s(</select>)

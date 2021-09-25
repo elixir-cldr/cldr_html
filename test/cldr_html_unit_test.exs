@@ -17,7 +17,7 @@ defmodule Cldr.HTML.Unit.Test do
              )
       assert string ==
          ~s(<select id="my_form_unit" name="my_form[unit]">) <>
-         ~s(<option value="foot" selected>feet</option>) <>
+         ~s(<option selected value="foot">feet</option>) <>
          ~s(<option value="inch">inches</option>) <>
          ~s(</select>)
 
@@ -36,7 +36,7 @@ defmodule Cldr.HTML.Unit.Test do
              )
       assert string ==
          ~s(<select id="my_form_unit" name="my_form[unit]">) <>
-         ~s(<option value="foot" selected>ft</option>) <>
+         ~s(<option selected value="foot">ft</option>) <>
          ~s(<option value="inch">in</option>) <>
          ~s(</select>)
 
@@ -54,7 +54,7 @@ defmodule Cldr.HTML.Unit.Test do
              )
       assert string ==
          ~s(<select id="my_form_unit" name="my_form[unit]">) <>
-         ~s(<option value="foot" selected>ฟุต</option>) <>
+         ~s(<option selected value="foot">ฟุต</option>) <>
          ~s(<option value="inch">นิ้ว</option>) <>
          ~s(</select>)
     end
