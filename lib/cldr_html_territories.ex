@@ -10,7 +10,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
             {:territories, [atom() | binary(), ...]}
             | {:locale, Cldr.Locale.locale_name() | Cldr.LanguageTag.t()}
             | {:collator, function()}
-            | {:mapper, (Cldr.Locale.territory() -> String.t())}
+            | {:mapper, (Cldr.Locale.territory_code() -> String.t())}
             | {:backend, module()}
             | {:selected, atom() | binary()}
           ]
@@ -24,7 +24,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
 
     """
     @type territory :: %{
-            territory: atom(),
+            territory: Cldr.Locale.territory_code(),
             name: String.t(),
             flag: String.t()
           }
