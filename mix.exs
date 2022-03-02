@@ -1,7 +1,7 @@
 defmodule Cldr.Html.MixProject do
   use Mix.Project
 
-  @version "1.1.0"
+  @version "1.2.0"
 
   def project do
     [
@@ -21,8 +21,9 @@ defmodule Cldr.Html.MixProject do
       package: package(),
       dialyzer: [
         ignore_warnings: ".dialyzer_ignore_warnings",
-        plt_add_apps: ~w(ex_money ex_cldr_units ex_cldr_territories ex_cldr_locale_display ratio ex_cldr_numbers ex_cldr_currencies)a
-      ],
+        plt_add_apps:
+          ~w(ex_money ex_cldr_units ex_cldr_territories ex_cldr_locale_display ratio ex_cldr_numbers ex_cldr_currencies)a
+      ]
     ]
   end
 
@@ -33,7 +34,6 @@ defmodule Cldr.Html.MixProject do
     """
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
@@ -74,16 +74,15 @@ defmodule Cldr.Html.MixProject do
     }
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_cldr, "~> 2.23"},
-      {:ex_cldr_currencies, "~> 2.11", optional: true},
-      {:ex_cldr_units, "~> 3.7", optional: true},
-      {:ex_cldr_locale_display, "~> 1.0", optional: true},
-      {:ex_cldr_territories, "~> 2.2", optional: true},
+      {:ex_cldr, "~> 2.26"},
+      {:ex_cldr_currencies, "~> 2.13", optional: true},
+      {:ex_cldr_units, "~> 3.12", optional: true},
+      {:ex_cldr_locale_display, "~> 1.3", optional: true},
       {:ex_cldr_collation, "~> 0.5", optional: true},
-      {:ex_money, "~> 5.0", optional: true},
+      {:ex_money, "~> 5.9", optional: true},
+
       {:phoenix_html, "~> 1.2 or ~> 2.0 or ~> 3.0"},
       {:jason, "~> 1.0", optional: true},
       {:poison, "~> 2.1 or ~> 3.0 or ~> 4.0", optional: true},

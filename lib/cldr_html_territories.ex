@@ -24,10 +24,10 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
 
     """
     @type territory :: %{
-      territory: atom(),
-      name: String.t(),
-      flag: String.t()
-    }
+            territory: atom(),
+            name: String.t(),
+            flag: String.t()
+          }
 
     @doc """
     Generate an HTML select tag for a territory list
@@ -119,7 +119,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
       select_options =
         options
         |> Map.drop(@omit_from_select_options)
-        |> Map.to_list
+        |> Map.to_list()
 
       options =
         options
@@ -201,7 +201,9 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
       options
     end
 
-    defp maybe_include_selected_territory(%{territories: territories, selected: selected} = options) do
+    defp maybe_include_selected_territory(
+           %{territories: territories, selected: selected} = options
+         ) do
       if Enum.any?(territories, &(&1 == selected)) do
         options
       else

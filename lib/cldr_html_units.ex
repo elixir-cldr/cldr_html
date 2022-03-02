@@ -98,7 +98,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
       select_options =
         options
         |> Map.drop(@omit_from_select_options)
-        |> Map.to_list
+        |> Map.to_list()
 
       options =
         options
@@ -124,7 +124,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
         backend: nil,
         locale: Cldr.get_locale(),
         collator: &default_collator/1,
-        mapper: &(&1),
+        mapper: & &1,
         style: :long,
         selected: nil
       )
@@ -225,6 +225,5 @@ if Cldr.Code.ensure_compiled?(Cldr.Unit) do
     defp default_unit_list() do
       Cldr.Unit.known_units()
     end
-
   end
 end

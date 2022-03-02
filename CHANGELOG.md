@@ -1,12 +1,20 @@
 # Changelog
 
+## Cldr_HTML v1.2.0
+
+This is the changelog for Cldr HTML v1.2.0 released on March 2nd, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Enhancements
+
+* Updates to [ex_cldr version 2.26.0](https://hex.pm/packages/ex_cldr/2.26.0) which uses atoms for locale names and rbnf locale names. This is consistent with out elements of `t:Cldr.LanguageTag` where atoms are used where the cardinality of the data is fixed and relatively small and strings where the data is free format.
+
 ## Cldr_HTML v1.1.0
 
 This is the changelog for Cldr HTML v1.1.0 released on September 25th, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
 
 ### Bug Fixes
 
-* Support `phoenix_html` version 3.0 in additional to earlier releases.
+* Support `phoenix_html` version 3.0 in addition to earlier releases.
 
 ## Cldr_HTML v1.0.1
 

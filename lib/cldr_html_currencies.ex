@@ -97,7 +97,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
       select_options =
         options
         |> Map.drop(@omit_from_select_options)
-        |> Map.to_list
+        |> Map.to_list()
 
       options =
         options

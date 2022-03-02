@@ -18,10 +18,10 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
           ]
 
     @type locale :: %{
-      locale: String.t(),
-      display_name: String.t(),
-      language_tag: Cldr.LanguageTag.t()
-    }
+            locale: String.t(),
+            display_name: String.t(),
+            language_tag: Cldr.LanguageTag.t()
+          }
 
     @type mapper :: (locale() -> String.t())
 
@@ -124,15 +124,21 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
 
     # Selected currency
     @omit_from_select_options [
-      :locales, :locale, :mapper, :collator, :backend,
-      :add_likely_subtags, :prefer, :compound_locale
+      :locales,
+      :locale,
+      :mapper,
+      :collator,
+      :backend,
+      :add_likely_subtags,
+      :prefer,
+      :compound_locale
     ]
 
     defp select(form, field, options, _selected) do
       select_options =
         options
         |> Map.drop(@omit_from_select_options)
-        |> Map.to_list
+        |> Map.to_list()
 
       options =
         options
@@ -187,8 +193,7 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
         |> Map.take([:add_likely_subtags])
         |> Map.to_list()
 
-      backend =
-        options[:backend]
+      backend = options[:backend]
 
       with {:ok, locale} <- Locale.canonical_language_tag(selected, backend, list_options) do
         {:ok, Map.put(options, :selected, locale)}
@@ -207,11 +212,10 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
         |> Map.take([:add_likely_subtags])
         |> Map.to_list()
 
-      backend =
-        options[:backend]
+      backend = options[:backend]
 
       Enum.reduce_while(locales, [], fn locale, acc ->
-        case Locale.canonical_language_tag(locale, backend, list_options) do
+        case Locale.canonical_language_tag(to_string(locale), backend, list_options) do
           {:ok, locale} -> {:cont, [locale | acc]}
           {:error, reason} -> {:halt, {:error, reason}}
         end
@@ -242,6 +246,7 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
 
     defp validate_locale(locale, options) do
       {locale, backend} = Cldr.locale_and_backend_from(locale, options.backend)
+
       with {:ok, locale} <- Cldr.validate_locale(locale, backend) do
         options
         |> Map.put(:locale, locale)
@@ -301,4 +306,3 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
     end
   end
 end
-
