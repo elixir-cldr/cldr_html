@@ -44,7 +44,7 @@ This is the changelog for Cldr HTML v0.5.0 released on June 23rd, 2021.  For old
 
 ### Enhancements
 
-* Adds a `:collator` option to the `Cldr.HTML.{Unit, Territory, Currency}.select/4`. This enables a library user to implement any desired collation on the select opions before rendering.
+* Adds a `:collator` option to the `Cldr.HTML.{Unit, Territory, Currency}.select/4`. This enables a library user to implement any desired collation on the select options before rendering.
 
 ## Cldr_HTML v0.4.0
 
