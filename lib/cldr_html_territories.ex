@@ -108,6 +108,33 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
       select(form, field, validate_options(options), options[:selected])
     end
 
+    @doc """
+    Generate a list of options for a territory list
+    that can be used with `Phoenix.HTML.Form.select/4`,
+    `Phoenix.HTML.Form.options_for_select/2` or
+    to create a <datalist>.
+
+    ## Arguments
+
+    * A `Keyword.t()` list of options
+
+    ## Options
+
+    See `Cldr.HTML.Territory.select/3` for options.
+    """
+    @spec territory_options(select_options) ::
+            list(tuple())
+            | {:error, {Cldr.UnknownTerritoryError, binary()}}
+            | {:error, {Cldr.UnknownLocaleError, binary()}}
+
+    def territory_options(options \\ [])
+
+    def territory_options(options) when is_list(options) do
+      options
+      |> validate_options()
+      |> build_territory_options()
+    end
+
     # Invalid options
     defp select(_form, _field, {:error, reason}, _selected) do
       {:error, reason}
@@ -121,10 +148,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
         |> Map.drop(@omit_from_select_options)
         |> Map.to_list()
 
-      options =
-        options
-        |> maybe_include_selected_territory
-        |> territory_options
+      options = build_territory_options(options)
 
       Phoenix.HTML.Form.select(form, field, options, select_options)
     end
@@ -211,7 +235,9 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
       end
     end
 
-    defp territory_options(options) do
+    defp build_territory_options(options) when is_map(options) do
+      options = maybe_include_selected_territory(options)
+
       territories = Map.fetch!(options, :territories)
       collator = Map.fetch!(options, :collator)
       mapper = Map.fetch!(options, :mapper)
