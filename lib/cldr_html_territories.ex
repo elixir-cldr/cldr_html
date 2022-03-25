@@ -29,6 +29,8 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
             flag: String.t()
           }
 
+    @omit_from_select_options [:territories, :locale, :mapper, :collator, :backend, :style]
+
     @doc """
     Generate an HTML select tag for a territory list
     that can be used with a `Phoenix.HTML.Form.t`.
@@ -108,6 +110,23 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
       select(form, field, validate_options(options), options[:selected])
     end
 
+    # Invalid options
+    defp select(_form, _field, {:error, reason}, _selected) do
+      {:error, reason}
+    end
+
+    # Selected territory
+    defp select(form, field, options, _selected) do
+      select_options =
+        options
+        |> Map.drop(@omit_from_select_options)
+        |> Map.to_list()
+
+      options = build_territory_options(options)
+
+      Phoenix.HTML.Form.select(form, field, options, select_options)
+    end
+
     @doc """
     Generate a list of options for a territory list
     that can be used with `Phoenix.HTML.Form.select/4`,
@@ -121,6 +140,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
     ## Options
 
     See `Cldr.HTML.Territory.select/3` for options.
+
     """
     @spec territory_options(select_options) ::
             list(tuple())
@@ -135,22 +155,15 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
       |> build_territory_options()
     end
 
-    # Invalid options
-    defp select(_form, _field, {:error, reason}, _selected) do
-      {:error, reason}
-    end
-
-    # Selected territory
-    @omit_from_select_options [:territories, :locale, :mapper, :collator, :backend, :style]
-    defp select(form, field, options, _selected) do
-      select_options =
-        options
-        |> Map.drop(@omit_from_select_options)
-        |> Map.to_list()
-
-      options = build_territory_options(options)
-
-      Phoenix.HTML.Form.select(form, field, options, select_options)
+    defp default_options do
+      Map.new(
+        territories: default_territory_list(),
+        locale: Cldr.get_locale(),
+        backend: nil,
+        collator: &default_collator/1,
+        mapper: &{&1.flag <> " " <> &1.name, &1.territory_code},
+        selected: nil
+      )
     end
 
     defp validate_options(options) do
@@ -162,17 +175,6 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
            {:ok, options} <- validate_territories(options) do
         options
       end
-    end
-
-    defp default_options do
-      Map.new(
-        territories: default_territory_list(),
-        locale: Cldr.get_locale(),
-        backend: nil,
-        collator: &default_collator/1,
-        mapper: &{&1.flag <> " " <> &1.name, &1.territory_code},
-        selected: nil
-      )
     end
 
     defp validate_selected(%{selected: nil} = options) do
