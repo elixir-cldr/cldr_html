@@ -104,4 +104,20 @@ defmodule Cldr.HTML.Territory.Test do
                  ~s(</select>)
     end
   end
+
+  describe "territory_options/1" do
+    test "with selected territory" do
+      options =
+        Cldr.HTML.Territory.territory_options(
+          territories: [:US, :AU, :HK],
+          selected: :AU
+        )
+
+      assert options == [
+               {"🇦🇺 Australia", :AU},
+               {"🇭🇰 Hong Kong SAR China", :HK},
+               {"🇺🇸 United States", :US}
+             ]
+    end
+  end
 end
