@@ -82,7 +82,6 @@ defmodule Cldr.Html.MixProject do
       {:ex_cldr_locale_display, "~> 1.3", optional: true},
       {:ex_cldr_collation, "~> 0.5", optional: true},
       {:ex_money, "~> 5.9", optional: true},
-
       {:phoenix_html, "~> 1.2 or ~> 2.0 or ~> 3.0"},
       {:jason, "~> 1.0", optional: true},
       {:poison, "~> 2.1 or ~> 3.0 or ~> 4.0", optional: true},

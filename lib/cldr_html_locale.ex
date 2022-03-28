@@ -117,6 +117,28 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
       select(form, field, validate_options(options), options[:selected])
     end
 
+    @doc """
+    Generate a list of options for a locale list
+    that can be used with `Phoenix.HTML.Form.select/4`,
+    `Phoenix.HTML.Form.options_for_select/2` or
+    to create a <datalist>.
+    ## Arguments
+    * A `Keyword.t()` list of options
+    ## Options
+    See `Cldr.HTML.Locale.select/3` for options.
+    """
+    @spec locale_options(select_options) ::
+            list(tuple())
+            | {:error, {Cldr.UnknownLocaleError, binary()}}
+
+    def locale_options(options \\ [])
+
+    def locale_options(options) when is_list(options) do
+      options
+      |> validate_options()
+      |> build_locale_options()
+    end
+
     # Invalid options
     defp select(_form, _field, {:error, reason}, _selected) do
       {:error, reason}
@@ -140,10 +162,7 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
         |> Map.drop(@omit_from_select_options)
         |> Map.to_list()
 
-      options =
-        options
-        |> maybe_include_selected_locale()
-        |> locale_options()
+      options = build_locale_options(options)
 
       Phoenix.HTML.Form.select(form, field, options, select_options)
     end
@@ -271,7 +290,9 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
       end
     end
 
-    defp locale_options(options) do
+    defp build_locale_options(options) when is_map(options) do
+      options = maybe_include_selected_locale(options)
+
       locales = Map.fetch!(options, :locales)
       locale = Map.fetch!(options, :locale)
       collator = Map.fetch!(options, :collator)
