@@ -63,4 +63,16 @@ defmodule Cldr.HTML.Unit.Test do
                  ~s(</select>)
     end
   end
+
+  describe "unit_options/1" do
+    test "with selected unit" do
+      options =
+        Cldr.HTML.Unit.unit_options(
+          units: [:foot, :inch],
+          selected: :foot
+        )
+
+      assert options == [{"feet", "foot"}, {"inches", "inch"}]
+    end
+  end
 end

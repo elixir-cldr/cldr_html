@@ -53,4 +53,16 @@ defmodule Cldr.HTML.Locale.Test do
                {:error, {Cldr.UnknownLocaleError, "The locale \"ja\" is not known."}}
     end
   end
+
+  describe "locale_options/1" do
+    test "with selected locale" do
+      options =
+        Cldr.HTML.Locale.locale_options(
+          locales: [:en, :ja, :ar],
+          selected: :en
+        )
+
+      assert options == [{"Arabic", "ar"}, {"English", "en"}, {"Japanese", "ja"}]
+    end
+  end
 end

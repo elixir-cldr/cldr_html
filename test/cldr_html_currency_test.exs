@@ -107,4 +107,20 @@ defmodule Cldr.HTML.Currency.Test do
                {:error, {Cldr.InvalidLanguageError, "The language \"invalid\" is invalid"}}
     end
   end
+
+  describe "currency_options/1" do
+    test "with selected currency" do
+      options =
+        Cldr.HTML.Currency.currency_options(
+          currencies: [:USD, :JPY, :EUR],
+          selected: :USD
+        )
+
+      assert options == [
+               {"EUR - Euro", "EUR"},
+               {"JPY - Japanese Yen", "JPY"},
+               {"USD - US Dollar", "USD"}
+             ]
+    end
+  end
 end

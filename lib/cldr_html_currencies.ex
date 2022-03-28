@@ -86,6 +86,29 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
       select(form, field, validate_options(options), options[:selected])
     end
 
+    @doc """
+    Generate a list of options for a currency list
+    that can be used with `Phoenix.HTML.Form.select/4`,
+    `Phoenix.HTML.Form.options_for_select/2` or
+    to create a <datalist>.
+    ## Arguments
+    * A `Keyword.t()` list of options
+    ## Options
+    See `Cldr.HTML.Currency.select/3` for options.
+    """
+    @spec currency_options(select_options) ::
+            list(tuple())
+            | {:error, {Cldr.UnknownCurrencyError, binary()}}
+            | {:error, {Cldr.UnknownLocaleError, binary()}}
+
+    def currency_options(options \\ [])
+
+    def currency_options(options) when is_list(options) do
+      options
+      |> validate_options()
+      |> build_currency_options()
+    end
+
     # Invalid options
     defp select(_form, _field, {:error, reason}, _selected) do
       {:error, reason}
@@ -99,10 +122,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
         |> Map.drop(@omit_from_select_options)
         |> Map.to_list()
 
-      options =
-        options
-        |> maybe_include_selected_currency
-        |> currency_options
+      options = build_currency_options(options)
 
       Phoenix.HTML.Form.select(form, field, options, select_options)
     end
@@ -196,7 +216,9 @@ if Cldr.Code.ensure_compiled?(Cldr.Currency) do
       end
     end
 
-    defp currency_options(options) do
+    defp build_currency_options(options) when is_map(options) do
+      options = maybe_include_selected_currency(options)
+
       currencies = Map.fetch!(options, :currencies)
       collator = Map.fetch!(options, :collator)
       mapper = Map.fetch!(options, :mapper)
