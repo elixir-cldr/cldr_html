@@ -135,7 +135,7 @@ if Cldr.Code.ensure_compiled?(Cldr.Territory) do
 
     ## Arguments
 
-    * A `Keyword.t()` list of options
+    * A `Keyword.t()` list of options.
 
     ## Options
 

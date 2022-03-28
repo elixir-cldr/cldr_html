@@ -122,10 +122,15 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
     that can be used with `Phoenix.HTML.Form.select/4`,
     `Phoenix.HTML.Form.options_for_select/2` or
     to create a <datalist>.
+
     ## Arguments
-    * A `Keyword.t()` list of options
+
+    * A `Keyword.t()` list of options.
+
     ## Options
+
     See `Cldr.HTML.Locale.select/3` for options.
+
     """
     @spec locale_options(select_options) ::
             list(tuple())

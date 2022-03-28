@@ -1,5 +1,13 @@
 # Changelog
 
+## Cldr_HTML v1.4.0
+
+This is the changelog for Cldr HTML v1.4.0 released on March 29th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Enhancements
+
+* Adds `Cldr.HTML.Currency.currency_options/1`, `Cldr.HTML.Unit.unit_options/1` and `Cldr.HTML.Locale.locale_options/1` to generate a list of currency, unit and locale options that can be used in any case where a list of select options is required. Thanks to jokawachi-hg for the PR.
+
 ## Cldr_HTML v1.3.0
 
 This is the changelog for Cldr HTML v1.3.0 released on March 25th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
