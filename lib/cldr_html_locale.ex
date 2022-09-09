@@ -161,26 +161,27 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
       :compound_locale
     ]
 
-    defp select(form, field, options, _selected) do
-      locale = Map.get(options, :locale)
-
+    defp select(form, field, %{locale: locale} = options, _selected) do
       select_options =
         options
         |> Map.drop(@omit_from_select_options)
         |> Map.to_list()
 
       options = build_locale_options(options)
+      {options, select_options} = add_lang_attribute(locale, options, select_options)
 
-      if locale === @identity do
-        options = options |> Enum.map(
-          fn x ->
-            {key, value} = x
-            [key: key, value: value, lang: value]
-          end)
-        Phoenix.HTML.Form.select(form, field, options, select_options)
-      else
-        Phoenix.HTML.Form.select(form, field, options, select_options ++ [lang: locale])
-      end
+      Phoenix.HTML.Form.select(form, field, options, select_options)
+    end
+
+    # For the :identity case, add a :lang attribute to each select option
+    defp add_lang_attribute(@identity, options, select_options) do
+      options = Enum.map(options, fn {key, value} -> [key: key, value: value, lang: value] end)
+      {options, select_options}
+    end
+
+    # For the non-identity case, add one :lang attribute to the whole select
+    defp add_lang_attribute(locale, options, select_options) do
+      {options, Keyword.put(select_options, :lang, locale)}
     end
 
     defp validate_options(options) do
