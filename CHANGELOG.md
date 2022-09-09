@@ -1,5 +1,13 @@
 # Changelog
 
+## Cldr_HTML v1.4.1
+
+This is the changelog for Cldr HTML v1.4.1 released on September 10th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Bug Fixes
+
+* Adds `lang` attributes to locale selection to signal better information for accessibility. Thanks very much to @quentin-bettoum for the pull request. Closes #15.
+
 ## Cldr_HTML v1.4.0
 
 This is the changelog for Cldr HTML v1.4.0 released on March 29th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
