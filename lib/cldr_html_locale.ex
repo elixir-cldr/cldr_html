@@ -162,6 +162,8 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
     ]
 
     defp select(form, field, options, _selected) do
+      locale = Map.get(options, :locale)
+
       select_options =
         options
         |> Map.drop(@omit_from_select_options)
@@ -169,7 +171,16 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
 
       options = build_locale_options(options)
 
-      Phoenix.HTML.Form.select(form, field, options, select_options)
+      if locale === @identity do
+        options = options |> Enum.map(
+          fn x ->
+            {key, value} = x
+            [key: key, value: value, lang: value]
+          end)
+        Phoenix.HTML.Form.select(form, field, options, select_options)
+      else
+        Phoenix.HTML.Form.select(form, field, options, select_options ++ [lang: locale])
+      end
     end
 
     defp validate_options(options) do

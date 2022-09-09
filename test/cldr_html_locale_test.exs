@@ -17,7 +17,7 @@ defmodule Cldr.HTML.Locale.Test do
         )
 
       assert string ==
-               ~s{<select id="my_form_locale" name="my_form[locale]">} <>
+               ~s{<select id="my_form_locale" lang="en-001" name="my_form[locale]">} <>
                  ~s{<option value="ar">Arabic</option>} <>
                  ~s{<option value="zh-Hans">Chinese (Simplified)</option>} <>
                  ~s{<option value="zh-Hant">Chinese (Traditional)</option>} <>
@@ -38,13 +38,13 @@ defmodule Cldr.HTML.Locale.Test do
 
       assert string ==
                ~s{<select id=\"my_form_locale\" name=\"my_form[locale]\">} <>
-                 ~s{<option value=\"en\">English</option>} <>
-                 ~s{<option value=\"he\">עברית</option>} <>
-                 ~s{<option value=\"ar\">العربية</option>} <>
-                 ~s{<option value=\"th\">ไทย</option>} <>
-                 ~s{<option value=\"zh\">中文</option>} <>
-                 ~s{<option value=\"zh-Hans\">中文（简体）</option>} <>
-                 ~s{<option value=\"zh-Hant\">中文（繁體）</option>} <>
+                 ~s{<option lang=\"en\" value=\"en\">English</option>} <>
+                 ~s{<option lang=\"he\" value=\"he\">עברית</option>} <>
+                 ~s{<option lang=\"ar\" value=\"ar\">العربية</option>} <>
+                 ~s{<option lang=\"th\" value=\"th\">ไทย</option>} <>
+                 ~s{<option lang=\"zh\" value=\"zh\">中文</option>} <>
+                 ~s{<option lang=\"zh-Hans\" value=\"zh-Hans\">中文（简体）</option>} <>
+                 ~s{<option lang=\"zh-Hant\" value=\"zh-Hant\">中文（繁體）</option>} <>
                  ~s{</select>}
     end
 
