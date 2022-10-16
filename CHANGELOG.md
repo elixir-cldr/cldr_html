@@ -1,5 +1,13 @@
 # Changelog
 
+## Cldr_HTML v1.4.2
+
+This is the changelog for Cldr HTML v1.4.2 released on October 17th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Bug Fixes
+
+* Fix type spec for select options to remove dialyzer warning. Thanks to @quentin-bettoum. Closes #16.
+
 ## Cldr_HTML v1.4.1
 
 This is the changelog for Cldr HTML v1.4.1 released on September 10th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
