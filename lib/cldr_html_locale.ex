@@ -15,6 +15,7 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
             | {:mapper, function()}
             | {:backend, module()}
             | {:selected, atom() | binary()}
+            | {atom(), any()}
           ]
 
     @type locale :: %{
