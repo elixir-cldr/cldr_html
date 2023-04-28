@@ -31,7 +31,7 @@ if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
     # All configurations include these locales
     # but they shouldn't be presented for
     # display
-    @dont_include_default ["en-001", "root"]
+    @dont_include_default [:"en-001", :root, :und]
 
     @doc """
     Generate an HTML select tag for a locale list

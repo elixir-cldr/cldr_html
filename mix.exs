@@ -1,7 +1,7 @@
 defmodule Cldr.Html.MixProject do
   use Mix.Project
 
-  @version "1.4.2"
+  @version "1.5.0"
 
   def project do
     [
@@ -22,7 +22,7 @@ defmodule Cldr.Html.MixProject do
       dialyzer: [
         ignore_warnings: ".dialyzer_ignore_warnings",
         plt_add_apps:
-          ~w(ex_money ex_cldr_units ex_cldr_territories ex_cldr_locale_display ratio ex_cldr_numbers ex_cldr_currencies)a
+          ~w(ex_cldr cldr_utils decimal ex_cldr_numbers ex_money ex_cldr_units ex_cldr_territories ex_cldr_locale_display ex_cldr_currencies)a
       ]
     ]
   end
@@ -76,12 +76,11 @@ defmodule Cldr.Html.MixProject do
 
   defp deps do
     [
-      {:ex_cldr, "~> 2.26"},
-      {:ex_cldr_currencies, "~> 2.13", optional: true},
-      {:ex_cldr_units, "~> 3.12", optional: true},
-      {:ex_cldr_locale_display, "~> 1.3", optional: true},
+      {:ex_cldr_currencies, "~> 2.15", optional: true},
+      {:ex_cldr_units, "~> 3.16", optional: true},
+      {:ex_cldr_locale_display, "~> 1.4", optional: true},
       {:ex_cldr_collation, "~> 0.5", optional: true},
-      {:ex_money, "~> 5.9", optional: true},
+      {:ex_money, "~> 5.13", optional: true},
       {:phoenix_html, "~> 1.2 or ~> 2.0 or ~> 3.0"},
       {:jason, "~> 1.0", optional: true},
       {:poison, "~> 2.1 or ~> 3.0 or ~> 4.0", optional: true},

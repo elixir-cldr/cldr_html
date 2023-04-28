@@ -1,5 +1,17 @@
 # Changelog
 
+## Cldr_HTML v1.5.0
+
+This is the changelog for Cldr HTML v1.5.0 released on April 28th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Bug Fixes
+
+* Fix omitting `:und` locale from the locale selection list
+
+### Enhancements
+
+* Updates to [ex_cldr version 2.37.0](https://hex.pm/packages/ex_cldr/2.37.0) which includes data from [CLDR release 43](https://cldr.unicode.org/index/downloads/cldr-43)
+
 ## Cldr_HTML v1.4.2
 
 This is the changelog for Cldr HTML v1.4.2 released on October 17th, 2022.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
