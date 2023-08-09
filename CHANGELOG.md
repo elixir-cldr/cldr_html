@@ -1,6 +1,6 @@
 # Changelog
 
-## Cldr_HTML v1.5.0
+## Cldr_HTML v1.5.1
 
 This is the changelog for Cldr HTML v1.5.1 released on August 10th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
 
