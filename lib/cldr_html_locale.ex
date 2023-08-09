@@ -1,4 +1,4 @@
-if Cldr.Code.ensure_compiled?(Cldr.LocaleDisplay) do
+if match?({:module, _}, Code.ensure_compiled(Cldr.LocaleDisplay)) do
   defmodule Cldr.HTML.Locale do
     @moduledoc """
     Implements `Phoenix.HTML.Form.select/4` specifically for

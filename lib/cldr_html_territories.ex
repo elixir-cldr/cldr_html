@@ -1,4 +1,4 @@
-if Cldr.Code.ensure_compiled?(Cldr.Territory) do
+if match?({:module, _}, Code.ensure_compiled(Cldr.Territory)) do
   defmodule Cldr.HTML.Territory do
     @moduledoc """
     Implements `Phoenix.HTML.Form.select/4` specifically for

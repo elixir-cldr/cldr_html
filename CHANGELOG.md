@@ -2,6 +2,14 @@
 
 ## Cldr_HTML v1.5.0
 
+This is the changelog for Cldr HTML v1.5.1 released on August 10th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Bug Fixes
+
+* Fixes compile time module checking on Elixir 1.15 and OTP 25 or later. Thanks to @cw789 for the report. Closes #17.
+
+## Cldr_HTML v1.5.0
+
 This is the changelog for Cldr HTML v1.5.0 released on April 28th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
 
 ### Bug Fixes
