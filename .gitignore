@@ -9,6 +9,7 @@ erl_crash.dump
 *.tar
 .DS_Store
 .iex.exs
+.tools-versions
 
 # The xml downloaded from Unicode
 /downloads
