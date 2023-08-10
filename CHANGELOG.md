@@ -1,5 +1,13 @@
 # Changelog
 
+## Cldr_HTML v1.5.2
+
+This is the changelog for Cldr HTML v1.5.2 released on August 11th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Bug Fixes
+
+* Add `ex_cldr_territories` as optional dependency - as it should always have been. Thanks to @cw789 for the report and great patience. Closes #17. Again.
+
 ## Cldr_HTML v1.5.1
 
 This is the changelog for Cldr HTML v1.5.1 released on August 10th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)

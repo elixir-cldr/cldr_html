@@ -1,7 +1,7 @@
 defmodule Cldr.Html.MixProject do
   use Mix.Project
 
-  @version "1.5.1"
+  @version "1.5.2"
 
   def project do
     [
@@ -77,6 +77,7 @@ defmodule Cldr.Html.MixProject do
   defp deps do
     [
       {:ex_cldr_currencies, "~> 2.15", optional: true},
+      {:ex_cldr_territories, "~> 2.8", optional: true},
       {:ex_cldr_units, "~> 3.16", optional: true},
       {:ex_cldr_locale_display, "~> 1.4", optional: true},
       {:ex_cldr_collation, "~> 0.5", optional: true},
