@@ -121,6 +121,7 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Currency)) do
 
     # Selected currency
     @omit_from_select_options [:currencies, :locale, :mapper, :collator, :backend]
+
     defp select(form, field, options, _selected) do
       select_options =
         options
@@ -129,7 +130,36 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Currency)) do
 
       options = build_currency_options(options)
 
-      Phoenix.HTML.Form.select(form, field, options, select_options)
+      to_select(form, field, options, select_options)
+    end
+
+    if function_exported?(Phoenix.HTML.Form, :select, 4) do
+      defp to_select(form, field, options, select_options) do
+        Phoenix.HTML.Form.select(form, field, options, select_options)
+      end
+    else
+      defp to_select(form, field, options, select_options) do
+        {selected, select_options} = Keyword.pop(select_options, :selected)
+
+        safe_options =
+          options
+          |> Phoenix.HTML.Form.options_for_select(selected)
+          |> Phoenix.HTML.safe_to_string()
+
+        safe_attrs =
+          [
+            id: Phoenix.HTML.Form.input_id(form, field),
+            name: Phoenix.HTML.Form.input_name(form, field)
+          ]
+          |> Keyword.merge(select_options)
+          |> Enum.sort()
+          |> Phoenix.HTML.attributes_escape()
+          |> Phoenix.HTML.safe_to_string()
+
+        ["<select", safe_attrs, ?>, safe_options, "</select>"]
+        |> IO.iodata_to_binary()
+        |> Phoenix.HTML.raw()
+      end
     end
 
     defp validate_options(options) do
