@@ -108,9 +108,7 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.LocaleDisplay)) do
             field :: Phoenix.HTML.Form.field(),
             select_options
           ) ::
-            Phoenix.HTML.safe()
-            | {:error, {Cldr.UnknownCurrencyError, binary()}}
-            | {:error, {Cldr.UnknownLocaleError, binary()}}
+            Phoenix.HTML.safe() | {:error, {Cldr.UnknownLocaleError, binary()}}
 
     def select(form, field, options \\ [])
 
@@ -134,8 +132,7 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.LocaleDisplay)) do
 
     """
     @spec locale_options(select_options) ::
-            list(tuple())
-            | {:error, {Cldr.UnknownLocaleError, binary()}}
+            list(tuple()) | {:error, {Cldr.UnknownLocaleError, binary()}}
 
     def locale_options(options \\ [])
 
@@ -162,16 +159,49 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.LocaleDisplay)) do
       :compound_locale
     ]
 
-    defp select(form, field, %{locale: locale} = options, _selected) do
-      select_options =
-        options
-        |> Map.drop(@omit_from_select_options)
-        |> Map.to_list()
+    if function_exported?(Phoenix.HTML.Form, :select, 4) do
+      defp select(form, field, %{locale: locale} = options, _selected) do
+        select_options =
+          options
+          |> Map.drop(@omit_from_select_options)
+          |> Map.to_list()
 
-      options = build_locale_options(options)
-      {options, select_options} = add_lang_attribute(locale, options, select_options)
+        options = build_locale_options(options)
+        {options, select_options} = add_lang_attribute(locale, options, select_options)
 
-      Phoenix.HTML.Form.select(form, field, options, select_options)
+        Phoenix.HTML.Form.select(form, field, options, select_options)
+      end
+    else
+      defp select(form, field, %{locale: locale} = options, _selected) do
+        select_options =
+          options
+          |> Map.drop(@omit_from_select_options)
+          |> Map.to_list()
+
+        options = build_locale_options(options)
+        {options, select_options} = add_lang_attribute(locale, options, select_options)
+
+        selected = Keyword.get(select_options, :selected)
+        safe_options =
+          options
+          |> Phoenix.HTML.Form.options_for_select(selected)
+          |> Phoenix.HTML.safe_to_string()
+
+        lang = Keyword.take(select_options, [:lang])
+        safe_attrs =
+          [
+            id: Phoenix.HTML.Form.input_id(form, field),
+            name: Phoenix.HTML.Form.input_name(form, field)
+          ]
+          |> Kernel.++(lang)
+          |> Enum.sort()
+          |> Phoenix.HTML.attributes_escape()
+          |> Phoenix.HTML.safe_to_string()
+
+        ["<select", safe_attrs, ?>, safe_options, "</select>"]
+        |> IO.iodata_to_binary()
+        |> Phoenix.HTML.raw()
+      end
     end
 
     # For the :identity case, add a :lang attribute to each select option
