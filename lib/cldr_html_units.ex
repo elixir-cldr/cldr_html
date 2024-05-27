@@ -89,13 +89,12 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Unit)) do
 
     @doc """
     Generate a list of options for a unit list
-    that can be used with `Phoenix.HTML.Form.select/4`,
-    `Phoenix.HTML.Form.options_for_select/2` or
+    that can be used with `Phoenix.HTML.Form.options_for_select/2` or
     to create a <datalist>.
 
     ## Arguments
 
-    * A `Keyword.t()` list of options,
+    * A `t:Keyword.t/0` list of options,
 
     ## Options
 

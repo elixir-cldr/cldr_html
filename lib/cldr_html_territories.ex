@@ -37,11 +37,11 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Territory)) do
 
     ## Arguments
 
-    * A `Phoenix.HTML.Form.t()` form
+    * A `t:Phoenix.HTML.Form.t/0` form
 
-    * A `Phoenix.HTML.Form.field()` field
+    * A `t:Phoenix.HTML.Form.field/0` field
 
-    * A `Keyword.t()` list of options
+    * A `t:Keyword.t/0` list of options
 
     ## Options
 
@@ -158,13 +158,12 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Territory)) do
 
     @doc """
     Generate a list of options for a territory list
-    that can be used with `Phoenix.HTML.Form.select/4`,
-    `Phoenix.HTML.Form.options_for_select/2` or
+    that can be used with `Phoenix.HTML.Form.options_for_select/2` or
     to create a <datalist>.
 
     ## Arguments
 
-    * A `Keyword.t()` list of options.
+    * A `t:Keyword.t/0` list of options.
 
     ## Options
 
