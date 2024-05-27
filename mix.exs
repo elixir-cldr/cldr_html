@@ -1,13 +1,13 @@
 defmodule Cldr.Html.MixProject do
   use Mix.Project
 
-  @version "1.5.2"
+  @version "1.6.0"
 
   def project do
     [
       app: :cldr_html,
       version: @version,
-      elixir: "~> 1.10",
+      elixir: "~> 1.12",
       compilers: Mix.compilers(),
       elixirc_paths: elixirc_paths(Mix.env()),
       name: "Cldr HTML",

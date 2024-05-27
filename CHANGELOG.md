@@ -1,5 +1,15 @@
 # Changelog
 
+As of Cldr_HTML version 1.6.0 the minimum required Elixir version is 1.12.
+
+## Cldr_HTML v1.6.0
+
+This is the changelog for Cldr HTML v1.6.0 released on May 28th, 2024.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
+
+### Enhancements
+
+* Adds support for [phoenix_html version 4.0](https://hex.pm/packages/phoenix_html/4.1.1). Thanks very much to @03juan for the PR.
+
 ## Cldr_HTML v1.5.2
 
 This is the changelog for Cldr HTML v1.5.2 released on August 11th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_html/tags)
