@@ -116,27 +116,24 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Territory)) do
     end
 
     # Selected territory
+    defp select(form, field, options, _selected) do
+      select_options =
+        options
+        |> Map.drop(@omit_from_select_options)
+        |> Map.to_list()
+
+      options = build_territory_options(options)
+
+      to_select(form, field, options, select_options)
+    end
+
     if function_exported?(Phoenix.HTML.Form, :select, 4) do
-      defp select(form, field, options, _selected) do
-        select_options =
-          options
-          |> Map.drop(@omit_from_select_options)
-          |> Map.to_list()
-
-        options = build_territory_options(options)
-
+      defp to_select(form, field, options, select_options) do
         Phoenix.HTML.Form.select(form, field, options, select_options)
       end
     else
-      defp select(form, field, options, _selected) do
-        select_options =
-          options
-          |> Map.drop(@omit_from_select_options)
-          |> Map.to_list()
-
-        options = build_territory_options(options)
-
-        selected = Keyword.get(select_options, :selected)
+      defp to_select(form, field, options, select_options) do
+        {selected, select_options} = Keyword.pop(select_options, :selected)
 
         safe_options =
           options
@@ -148,6 +145,8 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Territory)) do
             id: Phoenix.HTML.Form.input_id(form, field),
             name: Phoenix.HTML.Form.input_name(form, field)
           ]
+          |> Keyword.merge(select_options)
+          |> Enum.sort()
           |> Phoenix.HTML.attributes_escape()
           |> Phoenix.HTML.safe_to_string()
 
