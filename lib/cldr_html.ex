@@ -1,6 +1,6 @@
 defmodule Cldr.HTML do
   @moduledoc """
-  Implements `Phoenix.HTML.Form.select/4` specifically
+  Implements an HTML Form select specifically
   for localized display of [Cldr](https://hex.pm/packages/ex_cldr)-based data.
 
   """

@@ -1,6 +1,6 @@
 # Cldr HTML
 
-`Phoenix.HTML.Form.select/4` helper functions for CLDR. The functions in this library produce localised selection tags for HTML forms for:
+Phoenix form select helper functions for CLDR. The functions in this library produce localised selection tags for HTML forms for:
 
 * Currencies
 * Units

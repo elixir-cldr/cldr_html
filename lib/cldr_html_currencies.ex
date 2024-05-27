@@ -1,7 +1,7 @@
 if match?({:module, _}, Code.ensure_compiled(Cldr.Currency)) do
   defmodule Cldr.HTML.Currency do
     @moduledoc """
-    Implements `Phoenix.HTML.Form.select/4` specifically for
+    Implements an HTML Form select specifically
     localised currency display.
 
     """
@@ -29,7 +29,7 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Currency)) do
 
     ## Options
 
-    For select options see `Phoenix.HTML.Form.select/4`
+    For select options see `Phoenix.HTML.Form.options_for_select/2`
 
     * `:currencies` defines the list of currencies to be
       displayed in the the `select` tag.  The list defaults to
@@ -60,10 +60,10 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Currency)) do
 
     * `:selected` identifies the currency that is to be selected
       by default in the `select` tag.  The default is `nil`. This
-      is passed unmodified to `Phoenix.HTML.Form.select/4`
+      is passed unmodified to the form generator.
 
     * `:prompt` is a prompt displayed at the top of the select
-       box. This is passed unmodified to `Phoenix.HTML.Form.select/4`
+       box. This is passed unmodified to the form generator.
 
     # Examples
 

@@ -1,7 +1,7 @@
 if match?({:module, _}, Code.ensure_compiled(Cldr.Territory)) do
   defmodule Cldr.HTML.Territory do
     @moduledoc """
-    Implements `Phoenix.HTML.Form.select/4` specifically for
+    Implements an HTML Form select specifically
     localised territory display.
 
     """
@@ -45,7 +45,7 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Territory)) do
 
     ## Options
 
-    For select options see `Phoenix.HTML.Form.select/4`
+    For select options see `Phoenix.HTML.Form.options_for_select/2`
 
     * `:territories` defines the list of territories to be
       displayed in the the `select` tag.  The list defaults to
@@ -80,10 +80,10 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Territory)) do
 
     * `:selected` identifies the territory that is to be selected
       by default in the `select` tag.  The default is `nil`. This
-      is passed unmodified to `Phoenix.HTML.Form.select/4`
+      is passed unmodified to the form generator.
 
     * `:prompt` is a prompt displayed at the top of the select
-       box. This is passed unmodified to `Phoenix.HTML.Form.select/4`
+       box. This is passed unmodified to the form generator.
 
     # Examples
 

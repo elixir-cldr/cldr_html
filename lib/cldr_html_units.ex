@@ -1,7 +1,7 @@
 if match?({:module, _}, Code.ensure_compiled(Cldr.Unit)) do
   defmodule Cldr.HTML.Unit do
     @moduledoc """
-    Implements `Phoenix.HTML.Form.select/4` specifically for
+    Implements an HTML Form select specifically
     localised unit display.
 
     """
@@ -17,19 +17,19 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Unit)) do
 
     @doc """
     Generate an HTML select tag for a unit list
-    that can be used with a `Phoenix.HTML.Form.t`.
+    that can be used with a `t:Phoenix.HTML.Form.t/0`.
 
     ## Arguments
 
-    * A `t:Phoenix.HTML.Form` form
+    * A `t:Phoenix.HTML.Form.t/0` form
 
-    * A `t:Phoenix.HTML.Form.field` field
+    * A `t:Phoenix.HTML.Form.field/0` field
 
     * A `t:Keyword` list of options
 
     ## Options
 
-    For select options see `Phoenix.HTML.Form.select/4`
+    For select options see `Phoenix.HTML.Form.options_for_select/2`
 
     * `:units` is a list of units to be displayed in the
       select. See `Cldr.Unit.known_units/0` and
@@ -61,10 +61,10 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.Unit)) do
 
     * `:selected` identifies the unit that is to be selected
       by default in the `select` tag.  The default is `nil`. This
-      is passed unmodified to `Phoenix.HTML.Form.select/4`
+      is passed unmodified to the form generator.
 
     * `:prompt` is a prompt displayed at the top of the select
-       box. This is passed unmodified to `Phoenix.HTML.Form.select/4`
+       box. This is passed unmodified to the form generator.
 
     # Examples
 
