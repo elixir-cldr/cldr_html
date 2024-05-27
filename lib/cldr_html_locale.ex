@@ -96,9 +96,9 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.LocaleDisplay)) do
 
     ## Examples
 
-         Cldr.HTML.Currency.select(:my_form, :locale_list, selected: "en")
+         Cldr.HTML.Locale.select(:my_form, :locale_list, selected: "en")
 
-         Cldr.HTML.Currency.select(:my_form, :locale_list,
+         Cldr.HTML.Locale.select(:my_form, :locale_list,
            locales: ["zh-Hant", "ar", "fr"],
            mapper: &({&1.display_name, &1.locale}))
 
@@ -147,7 +147,6 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.LocaleDisplay)) do
       {:error, reason}
     end
 
-    # Selected currency
     @omit_from_select_options [
       :locales,
       :locale,
@@ -159,6 +158,7 @@ if match?({:module, _}, Code.ensure_compiled(Cldr.LocaleDisplay)) do
       :compound_locale
     ]
 
+    # Selected locale
     defp select(form, field, %{locale: locale} = options, _selected) do
       select_options =
         options
