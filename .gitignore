@@ -19,3 +19,6 @@ erl_crash.dump
 
 # Generated erlang source
 /src/*.erl
+
+mise.toml
+.tool-versions
