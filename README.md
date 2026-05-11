@@ -119,7 +119,7 @@ Produces, when formatted:
 ```elixir
 def deps do
   [
-    {:cldr_html, "~> 0.6"}
+    {:cldr_html, "~> 1.6"}
   ]
 end
 ```
